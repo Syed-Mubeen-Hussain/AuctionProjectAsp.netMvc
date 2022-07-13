@@ -1,0 +1,129 @@
+﻿@model Auction.Models.Customer
+@{
+    ViewBag.Title = "CustomerPersonalProfile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--============= Hero Section Starts Here =============-->
+<div class="hero-section style-2">
+    <div class="bg_img hero-bg bottom_center sec-main-banner"></div>
+</div>
+<!--============= Hero Section Ends Here =============-->
+<!--============= Dashboard Section Starts Here =============-->
+<section class="dashboard-section padding-bottom mt--240 mt-lg--440 pos-rel">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-sm-10 col-md-7 col-lg-4">
+                <div class="dashboard-widget mb-30 mb-lg-0 sticky-menu">
+                    <div class="user">
+                        <div class="thumb-area">
+                            <div class="thumb">
+                                <img src="@Url.Content(Model.c_image)" alt="user">
+                            </div>
+                        </div>
+                        <div class="content">
+                            <h5 class="title"><a href="#0">@Model.c_userName</a></h5>
+                            <span class="username"><a href="javascript:void(0)">@Model.c_email</a></span>
+                        </div>
+                    </div>
+                    <ul class="dashboard-menu">
+                        <li>
+                            <a href="@Url.Action("CustomerDashboard","Home")"><i class="flaticon-dashboard"></i>Dashboard</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("CustomerPersonalProfile","Home")" class="active"><i class="flaticon-settings"></i>Personal Profile </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("CustomerMyBids","Home")"><i class="flaticon-auction"></i>My Bids</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("CustomerWinningBids","Home")"><i class="flaticon-best-seller"></i>Winning Bids</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("CustomerWishlist","Home")"><i class="flaticon-star"></i>My Wishlist</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Logout","Home")"><i class="flaticon-right-arrow"></i>Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="dash-pro-item mb-30 dashboard-widget">
+                            <div class="header">
+                                <h4 class="title">Personal Details</h4>
+                            </div>
+                            <ul class="dash-pro-body">
+                                <li>
+                                    <div class="info-name">First Name</div>
+                                    <div class="info-value">@Model.c_firstName</div>
+                                </li>
+                                <li>
+                                    <div class="info-name">Last Name</div>
+                                    <div class="info-value">@Model.c_lastName</div>
+                                </li>
+                                <li>
+                                    <div class="info-name">Age</div>
+                                    <div class="info-value">@Model.c_age</div>
+                                </li>
+                                <li>
+                                    <div class="info-name">Address</div>
+                                    <div class="info-value">@Model.c_address</div>
+                                </li>
+                                <li>
+                                    <div class="info-name">Username</div>
+                                    <div class="info-value">@Model.c_userName</div>
+                                </li>
+                                <li>
+                                    <div class="info-name">Register Date</div>
+                                    <div class="info-value">@Model.register_date</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="dash-pro-item mb-30 dashboard-widget">
+                            <div class="header">
+                                <h4 class="title">Email Address</h4>
+                            </div>
+                            <ul class="dash-pro-body">
+                                <li>
+                                    <div class="info-name">Email</div>
+                                    <div class="info-value"><a href="javascript:void(0)">@Model.c_email</a></div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="dash-pro-item mb-30 dashboard-widget">
+                            <div class="header">
+                                <h4 class="title">Phone</h4>
+                            </div>
+                            <ul class="dash-pro-body">
+                                <li>
+                                    <div class="info-name">Mobile</div>
+                                    <div class="info-value">@Model.c_phone</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="dash-pro-item dashboard-widget">
+                            <div class="header">
+                                <h4 class="title">Security</h4>
+                            </div>
+                            <ul class="dash-pro-body">
+                                <li>
+                                    <div class="info-name">Password</div>
+                                    <div class="info-value">@Model.c_password</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--============= Dashboard Section Ends Here =============-->

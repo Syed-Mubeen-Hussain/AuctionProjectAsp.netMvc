@@ -1,0 +1,57 @@
+﻿@model Auction.ViewModels.ShowBiddersHistoryViewModel
+
+@{
+    ViewBag.Title = "ShowBiddersHistory";
+    Layout = null;
+}
+
+<table class="history-table">
+    <thead>
+        <tr>
+            <th>Bidder</th>
+            <th style="text-align:left;">Total Bids</th>
+            <th>Total price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.customers.Count > 0)
+        {
+            foreach (var customer in Model.customers)
+            {
+                int countOfBids = 0;
+                long totalAmount = 0;
+                <tr>
+                    <td data-history="bidder">
+                        <div class="user-info">
+                            <div class="thumb">
+                                <img src="@Url.Content(customer.c_image)" alt="history">
+                            </div>
+                            <div class="content">
+                                @customer.c_userName
+                            </div>
+                        </div>
+                    </td>
+                    @foreach (var bid in Model.bids)
+                    {
+                        if (customer.c_id == bid.bid_fk_cus)
+                        {
+                            <td style="display:none;">
+                                <input type="hidden" style="color:red;" value="@(countOfBids += 1)" />
+                                <input type="hidden" value="@(totalAmount += bid.bid_amount)" />
+                            </td>
+                        }
+                    }
+
+                    <td data-history="unit price">@countOfBids</td>
+                    <td data-history="unit price">@totalAmount</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="3" class="text-center">No Bidders Found</td>
+            </tr>
+        }
+    </tbody>
+</table>

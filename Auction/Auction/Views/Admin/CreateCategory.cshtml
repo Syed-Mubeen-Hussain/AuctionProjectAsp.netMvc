@@ -1,0 +1,143 @@
+﻿@model Auction.Models.Category
+@{
+    ViewBag.Title = "Create";
+    Layout = null;
+}
+
+<h2 class="text-center">Create Category</h2>
+<div class="content-wrapper p-5">
+
+    <div class="row">
+        <div class="col-lg-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <form id="formData">
+                        <div class="form-group">
+                            <label style="font-size:15px;font-weight:bold;margin-top:10px;">Name</label>
+                            <input type="text" placeholder="Enter Category Name" style="padding:12px;" name="cat_name" class="form-control" value="" />
+                        </div>
+                        <div class="form-group  d-flex">
+                            <label style="font-size:15px;font-weight:bold;margin-top:10px;">Image</label>
+
+                            <img style="width: 220px;margin:20px;" class="img-fluid" id="cat_image" src="" />
+                        </div>
+                        <div class="form-control">
+                            <input type="hidden" id="ImageURL" name="cat_image" />
+                            <input id="imageUpload" name="Image" type="file" accept=".png, .jpg" />
+                            <span style="display:none;" id="image_upload_Error"></span>
+                        </div>
+                        <br />
+                        <button class="btn btn-primary" id="saveBtn" type="button">Save</button>
+                        <button class="btn btn-primary" id="cancelBtn" type="button">Cancel</button>
+                    </form>
+                    <div id="form_error" style="color:red;font-weight:bold;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+      $("#imageUpload").change(function () {
+    $("#image_upload_Error").hide();
+        var element = this;
+
+        var formData = new FormData();
+
+        var totalFiles = element.files.length;
+
+        for (var i = 0; i < totalFiles; i++) {
+            var file = element.files[i];
+            formData.append("Photo", file);
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("UploadImage", "Shared")',
+            dataType: 'json',
+            data: formData,
+            contentType: false,
+            processData: false
+        })
+            .done(function (response) {
+                if (response.Success == true) {
+                    $("#ImageURL").val(response.ImageURL);
+                    $("#cat_image").attr("src", response.ImageURL);
+                } else if (response.Success == false){
+                    $("#image_upload_Error").show();
+                    $("#image_upload_Error").html(response.Error);
+                }
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("FAIL");
+            });
+    });
+
+    $('#formData').validate({
+        rules: {
+            cat_name: {
+                required: true,
+                maxlength: 50,
+                normalizer: function (value) {
+                    return $.trim(value);
+                }
+            },
+            Image: {
+                required: true,
+                normalizer: function (value) {
+                    return $.trim(value);
+                }
+            },
+        },
+        messages: {
+            cat_name: {
+                required: 'Name is required',
+                maxlength: 'Maximum Length is 50'
+            },
+            Image: {
+                required: 'Image is required',
+            },
+        }
+    });
+
+    $("#saveBtn").click(function () {
+        if ($("#formData").valid()) {
+            var fup = document.getElementById('imageUpload');
+            var fileName = fup.value;
+            var ext = fileName.substring(fileName.lastIndexOf('.') + 1);
+            if (ext == "png" || ext == "jpg" || ext == "jpeg") {
+            $.ajax({
+                url: '@Url.Action("CreateCategory","Admin")',
+                type: 'post',
+                data: $("#formData").serialize()
+            })
+                .done(function (response) {
+                    if (response == "no") {
+                        $("#form_error").html("Category already exist");
+                    } else {
+                        $("#tableContainer").html(response);
+                        $("#actionContainer").html("");
+                    }
+                })
+                .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("FAIL");
+                });
+
+            }
+    }
+    });
+
+    $("#cancelBtn").click(function () {
+            $.ajax({
+                url: '@Url.Action("CategoryTable","Admin")',
+            })
+                .done(function (response) {
+                    $("#tableContainer").html(response);
+                    $("#actionContainer").html("");
+                })
+                .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("FAIL");
+                });
+    });
+
+</script>

@@ -1,0 +1,104 @@
+﻿
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .error {
+        color: red;
+    }
+</style>
+<div class="hero-section">
+    <div class="bg_img hero-bg bottom_center sec-main-banner"></div>
+</div>
+<!--============= Hero Section Ends Here =============-->
+<!--============= Account Section Starts Here =============-->
+<section class="account-section padding-bottom">
+    <div class="container">
+        <div class="account-wrapper mt--100 mt-lg--440">
+            <div class="left-side">
+                <div class="section-header">
+                    <h2 class="title">Sign In</h2>
+                </div>
+                <form class="login-form" action="@Url.Action("Login","Home")" method="post" id="formData">
+                    @if (ViewData["ReturnUrl"] != null)
+                    {
+                        <input type="hidden" name="ReturnUrl" value="@ViewData["ReturnUrl"]" />
+                    }
+                    else
+                    {
+                        <input type="hidden" name="ReturnUrl" value="@Request.QueryString["ReturnUrl"]" />
+                    }
+
+                    <div class="form-group mb-0">
+                        <label for="login-c_email"><i class="fa fa-user icon"></i></label>
+                        <input type="text" id="c_username" name="c_username" placeholder="Username">
+                    </div>
+                    <label id="c_username-error" class="error" for="c_username"></label>
+                    <span id="check_username_error" class="error"></span>
+
+                    <span>&nbsp;</span>
+
+                    <div class="form-group mb-0">
+                        <label for="login-pass"><i class="fas fa-lock"></i></label>
+                        <input type="password" id="c_password" name="c_password" placeholder="Password">
+                    </div>
+                    <label id="c_password-error" class="error" for="c_password"></label>
+                    <span>&nbsp;</span>
+
+                    <div class="form-group mb-0">
+                        <button type="button" id="loginBtn" class="custom-button">Login</button>
+                    </div>
+                </form>
+                @if (TempData["Error"] != null)
+                {
+                <span class="error" id="formError" style="font-weight:bold;">@TempData["Error"]</span>
+                }
+            </div>
+            <div class="right-side cl-white">
+                <div class="section-header mb-0">
+                    <h3 class="title mt-0">Sign up and create your Account</h3>
+                    <a href="@Url.Action("Register","Home")" class="custom-button transparent">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $('#formData').validate({
+        rules: {
+            c_username: {
+                required: true,
+                maxlength: 20,
+                normalizer: function (value) {
+                    return $.trim(value);
+                }
+            },
+            c_password: {
+                required: true,
+                maxlength: 20,
+                normalizer: function (value) {
+                    return $.trim(value);
+                }
+            },
+        },
+        messages: {
+            c_username: {
+                required: "Username is required",
+                maxlength: "Maximum 20 Characters"
+            },
+            c_password: {
+                required: "Password is required",
+                maxlength: "Maximum 20 Characters"
+            },
+        }
+    });
+
+    $("#loginBtn").click(function () {
+        $("#formError").html("");
+        if ($("#formData").valid()) {
+            $("#formData").submit();
+        }
+    });
+</script>

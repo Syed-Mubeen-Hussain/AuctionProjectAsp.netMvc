@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="47432d9d161d4f618ee07b20a915cf8b" Name="Diagram1" ZoomLevel="98">
+        <EntityTypeShape EntityType="db_AuctionModel.Admin" Width="1.5" PointX="0.75" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_AuctionModel.Bid" Width="1.5" PointX="7.5" PointY="6.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_AuctionModel.Cart" Width="1.5" PointX="8.25" PointY="10.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_AuctionModel.Category" Width="1.5" PointX="0.75" PointY="9.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_AuctionModel.Contact" Width="1.5" PointX="0.75" PointY="4.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_AuctionModel.Customer" Width="1.5" PointX="5.25" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_AuctionModel.image" Width="1.5" PointX="5.25" PointY="12.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_AuctionModel.order" Width="1.5" PointX="6" PointY="16" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_AuctionModel.order_details" Width="1.5" PointX="8.25" PointY="13.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_AuctionModel.Product" Width="1.5" PointX="3" PointY="8.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_AuctionModel.Product_View" Width="1.5" PointX="5.25" PointY="21.375" IsExpanded="true" />
+        <AssociationConnector Association="db_AuctionModel.FK__Bids__bid_fk_cus__4BAC3F29" ManuallyRouted="false" />
+        <AssociationConnector Association="db_AuctionModel.FK__Cart__cus_id__4222D4EF" ManuallyRouted="false" />
+        <AssociationConnector Association="db_AuctionModel.FK__Cart__p_id__412EB0B6" ManuallyRouted="false" />
+        <AssociationConnector Association="db_AuctionModel.FK__Product__p_fk_ca__2A4B4B5E" ManuallyRouted="false" />
+        <AssociationConnector Association="db_AuctionModel.FK__order__o_fk_cus___44FF419A" ManuallyRouted="false" />
+        <AssociationConnector Association="db_AuctionModel.FK__images__img_fk_p__5CD6CB2B" ManuallyRouted="false" />
+        <AssociationConnector Association="db_AuctionModel.FK__order_det__od_fk__48CFD27E" ManuallyRouted="false" />
+        <AssociationConnector Association="db_AuctionModel.FK__order_det__od_fk__47DBAE45" ManuallyRouted="false" />
+        <AssociationConnector Association="db_AuctionModel.FK__Product_V__av_fk__3B75D760" ManuallyRouted="false" />
+        <AssociationConnector Association="db_AuctionModel.FK__Bids__bid_fk_pro__6477ECF3" />
+        <EntityTypeShape EntityType="db_AuctionModel.Wishlist" Width="1.5" PointX="7.5" PointY="3.75" />
+        <AssociationConnector Association="db_AuctionModel.FK__Wishlist__w_fk_c__6FE99F9F" />
+        <AssociationConnector Association="db_AuctionModel.FK__Wishlist__w_fk_p__70DDC3D8" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

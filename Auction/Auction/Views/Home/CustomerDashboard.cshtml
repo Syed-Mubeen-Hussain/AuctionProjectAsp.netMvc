@@ -1,0 +1,99 @@
+﻿
+@{
+    ViewBag.Title = "Customer_Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+    string TotalBids = ViewData["totalBids"] != null ? ViewData["totalBids"].ToString() : "0";
+    string AuctionWon = ViewData["auctionWon"] != null ? ViewData["auctionWon"].ToString() : "0";
+    string Wishlist = ViewData["wishlist"] != null ? ViewData["wishlist"].ToString() : "0";
+}
+<!--============= Hero Section Starts Here =============-->
+<div class="hero-section style-2 pb-lg-400">
+    <div class="bg_img hero-bg bottom_center sec-main-banner"></div>
+</div>
+<!--============= Hero Section Ends Here =============-->
+<!--============= Dashboard Section Starts Here =============-->
+<section class="dashboard-section padding-bottom mt--240 mt-lg--325 pos-rel">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-sm-10 col-md-7 col-lg-4">
+                <div class="dashboard-widget mb-30 mb-lg-0">
+                    <div class="user">
+                        <div class="thumb-area">
+                            <div class="thumb">
+                                <img src="@ViewBag.customer.c_image" alt="img">
+                            </div>
+                        </div>
+                        <div class="content">
+                            <h5 class="title"><a href="javascript:void(0)">@ViewBag.customer.c_userName</a></h5>
+                            <span class="username"><a href="javascript:void(0)">@ViewBag.customer.c_email</a></span>
+                        </div>
+                    </div>
+                    <ul class="dashboard-menu">
+                        <li>
+                            <a href="@Url.Action("CustomerDashboard","Home")" class="active"><i class="flaticon-dashboard"></i>Dashboard</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("CustomerPersonalProfile","Home")"><i class="flaticon-settings"></i>Personal Profile </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("CustomerMyBids","Home")"><i class="flaticon-auction"></i>My Bids</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("CustomerWinningBids","Home")"><i class="flaticon-best-seller"></i>Winning Bids</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("CustomerWishlist","Home")"><i class="flaticon-star"></i>My Wishlist</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Logout","Home")"><i class="flaticon-right-arrow"></i>Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="dashboard-widget mb-40">
+                    <div class="dashboard-title mb-30">
+                        <h5 class="title">My Activity</h5>
+                    </div>
+                    <div class="row justify-content-center mb-30-none">
+                        <div class="col-md-4 col-sm-6">
+                            <div class="dashboard-item">
+                                <div class="thumb">
+                                    <img src="~/Content/images/dashboard-01.png" alt="dashboard">
+                                </div>
+                                <div class="content">
+                                    <h2 class="title"><span class="counter">@TotalBids</span></h2>
+                                    <h6 class="info">Total Bids</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-6">
+                            <div class="dashboard-item">
+                                <div class="thumb">
+                                    <img src="~/Content/images/dashboard-02.png" alt="dashboard">
+                                </div>
+                                <div class="content">
+                                    <h2 class="title"><span class="counter">@AuctionWon</span></h2>
+                                    <h6 class="info">Auctions Won</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-6">
+                            <div class="dashboard-item">
+                                <div class="thumb">
+                                    <img src="~/Content/images/dashboard-03.png" alt="dashboard">
+                                </div>
+                                <div class="content">
+                                    <h2 class="title"><span class="counter">@Wishlist</span></h2>
+                                    <h6 class="info">Wishlist</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--============= Dashboard Section Ends Here =============-->

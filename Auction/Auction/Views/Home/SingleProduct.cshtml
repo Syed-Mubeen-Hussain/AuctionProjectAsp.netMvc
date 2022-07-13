@@ -1,0 +1,588 @@
+﻿@using Auction.ViewModels
+@model Auction.ViewModels.SingleProductViewModel
+@{
+    ViewBag.Title = "SingleProduct";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    #sync2 > div.owl-stage-outer {
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    button:disabled,
+    button[disabled] {
+        opacity: 0.5;
+    }
+</style>
+<!--============= Hero Section Starts Here =============-->
+<div class="hero-section style-2">
+    <div class="bg_img hero-bg bottom_center sec-main-banner"></div>
+</div>
+<!--============= Hero Section Ends Here =============-->
+<!--============= Product Details Section Starts Here =============-->
+<section class="product-details padding-bottom mt--240 mt-lg--440">
+    <div class="container">
+        <div class="product-details-slider-top-wrapper">
+            <div class="product-details-slider owl-theme owl-carousel" id="sync1">
+                @if (Model != null && Model.images.Count() > 0)
+                {
+                    foreach (var img in Model.images)
+                    {
+                        <div class="slide-top-item">
+                            <div class="slide-inner" style="display: flex;justify-content: center;align-items: center;background: transparent;">
+                                <img style="width: 100%;height: 500px;object-fit: cover;" src="@Url.Content(img.img_text)" alt="product image">
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+        @if (Model.images.Count > 1)
+        {
+            <div class="product-details-slider-wrapper">
+                <div class="product-bottom-slider owl-theme owl-carousel" id="sync2">
+                    @if (Model != null && Model.images.Count() > 0)
+                    {
+                        foreach (var img in Model.images)
+                        {
+                            <div class="slide-bottom-item">
+                                <div class="slide-inner">
+                                    <img style="width: 100%;height: 80px;object-fit: cover;" src="@Url.Content(img.img_text)" alt="product image">
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+                <span class="det-prev det-nav">
+                    <i class="fas fa-angle-left"></i>
+                </span>
+                <span class="det-next det-nav active">
+                    <i class="fas fa-angle-right"></i>
+                </span>
+            </div>
+        }
+        <div class="row mt-40-60-80">
+            <div class="col-lg-8">
+                <div class="product-details-content">
+                    <div class="product-details-header">
+                        <h2 class="title">@Model.product.p_name</h2>
+                        <ul>
+                            <li>Item #: @Model.product.p_id</li>
+                        </ul>
+                    </div>
+                    <div id="tableContainer">
+                        @{
+                            if (Model.bids.Count > 0 && Model.highestBid != null)
+                            {
+                                SingleProductViewModel singleProductViewModel = new SingleProductViewModel();
+                                singleProductViewModel.bids = Model.bids;
+                                singleProductViewModel.highestBid = Model.highestBid;
+                                Html.RenderPartial("AuctionBids", singleProductViewModel);
+                            }
+                            else
+                            {
+                                <ul id="bidDiv" class="price-table mb-30" style="background: #ebf2ff;border-radius: 10px;padding: 20px 30px;padding-bottom: 3px;">
+                                    <li style="display:flex;justify-content:center;">
+                                        <div style="text-align: center;font-weight: bold;padding: 0px;margin: 0px;font-size: 20px;padding-bottom:18px;">No Bids Found</div>
+                                    </li>
+                                </ul>
+                            }
+                        }
+                    </div>
+                    @if (Model.customer != null)
+                    {
+                        <div id="bidForm" class="product-bid-area">
+                            <div class="product-bid-form">
+                                <div class="search-icon">
+
+                                    <img src="@Url.Content(Model.customer.c_image)" style="width: 60px;border-radius: 100px;height: 60px;object-fit: cover;" alt="product">
+                                </div>
+                                <input type="number" min="1" id="bid_amount" placeholder="Enter your bid amount">
+                                <button type="button" id="submitBtn" class="custom-button">Submit a bid</button>
+                            </div>
+                            <div id="formError" style="padding-left: 105px;color: red;font-weight: 500;"></div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div id="bidForm2" class="product-bid-area" style="display:flex;justify-content:center;">
+                            <a href="@Url.Action("Login","Home",new { ReturnUrl = "/Home/SingleProduct/"+Model.product.p_id })" id="submitBtn2" class="custom-button">Submit a bid</a>
+                        </div>
+                    }
+                        <div id="buyNow" class="buy-now-area">
+                            @if (Session["customer_id"] != null)
+                            {
+                                <a href="javascript:void(0)" class="custom-button" id="buynowBtn">Buy Now: Rs @Model.product.p_price</a>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Login","Home",new { ReturnUrl = "/Home/SingleProduct/"+Model.product.p_id })" class="custom-button">Buy Now: Rs @Model.product.p_price</a>
+                            }
+                            @if (Session["customer_id"] != null)
+                            {
+                                <a href="javascript:void(0)" id="addToWishlist" class="rating custom-button active border"><i class="fas fa-star"></i> Add to Wishlist</a>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Login","Home",new { ReturnUrl = "/Home/SingleProduct/"+Model.product.p_id })" class="rating custom-button active border"><i class="fas fa-star"></i> Add to Wishlist</a>
+                            }
+                                <a href="@Url.Action("Index","Home")" class="custom-button">Go To Home Page</a>
+                        </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="product-sidebar-area" style="margin-top:100px;">
+                    <div class="product-single-sidebar mb-3">
+                        <h6 id="winAuction_msg" class="title" style="font-size: 23px;">This Auction Ends in:</h6>
+                        <div class="countdown">
+                            <div style="font-size: 25px;" id="bid_counter1"></div>
+                        </div>
+                        <div class="side-counter-area">
+                            <div class="side-counter-item">
+                                <div class="thumb">
+                                    <img src="~/Content/images/product-icon1.png" alt="product">
+                                </div>
+                                <div class="content">
+                                    <h3 class="count-title"><span id="totalBidders">@Model.totalBidders</span></h3>
+                                    <p>Total Bidders</p>
+                                </div>
+                            </div>
+                            <div class="side-counter-item">
+                                <div class="thumb">
+                                    <img src="~/Content/images/product-icon2.png" alt="product">
+                                </div>
+                                <div class="content">
+                                    <h3 class="count-title"><span>@Model.ProductViews</span></h3>
+                                    <p>Views</p>
+                                </div>
+                            </div>
+                            <div class="side-counter-item">
+                                <div class="thumb">
+                                    <img src="~/Content/images/product-icon3.png" alt="product">
+                                </div>
+                                <div class="content">
+                                    <h3 class="count-title"><span id="totalBids">@Model.totalBids</span></h3>
+                                    <p>Total Bids</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="product-tab-menu-area mb-40-60 mt-70-100">
+        <div class="container">
+            <ul class="product-tab-menu nav nav-tabs">
+                <li>
+                    <a href="#details" class="active" data-toggle="tab">
+                        <div class="thumb">
+                            <img src="~/Content/images/product-tab1.png" alt="product">
+                        </div>
+                        <div class="content">Description</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#delevery" data-toggle="tab">
+                        <div class="thumb">
+                            <img src="~/Content/images/product-tab2.png" alt="product">
+                        </div>
+                        <div class="content">Delivery Options</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#history" id="historyBtn" data-toggle="tab">
+                        <div class="thumb">
+                            <img src="~/Content/images/product-tab3.png" alt="product">
+                        </div>
+                        <div class="content">Bid History (36)</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#questions" data-toggle="tab">
+                        <div class="thumb">
+                            <img src="~/Content/images/product-tab4.png" alt="product">
+                        </div>
+                        <div class="content">Questions </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="container">
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="details">
+                <div class="tab-details-content">
+                    <div class="header-area">
+                        @Model.product.p_description
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade show" id="delevery">
+                <div class="shipping-wrapper">
+                    <div class="item">
+                        <h5 class="title">shipping</h5>
+                        <div class="table-wrapper">
+                            <table class="shipping-table">
+                                <thead>
+                                    <tr>
+                                        <th>Available delivery methods </th>
+                                        <th>Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Customer Pick-up (within 10 days)</td>
+                                        <td>$0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Standard Shipping (5-7 business days)</td>
+                                        <td>Not Applicable</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Expedited Shipping (2-4 business days)</td>
+                                        <td>Not Applicable</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <h5 class="title">Notes</h5>
+                        <p>
+                            Please carefully review our shipping and returns policy before committing to a bid.
+                            From time to time, and at its sole discretion, Sbidu may change the prevailing fee structure for shipping and handling.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade show" id="history">
+                <div class="history-wrapper">
+                    <div class="item">
+                        <h5 class="title">Bid History</h5>
+                        <div class="history-table-area" id="showBiddersHistory">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade show" id="questions">
+                <h5 class="faq-head-title">Frequently Asked Questions</h5>
+                <div class="faq-wrapper">
+                    <div class="faq-item">
+                        <div class="faq-title">
+                            <img src="~/Content/images/img-faq.png" alt="css"><span class="title">How to start bidding?</span><span class="right-icon"></span>
+                        </div>
+                        <div class="faq-content">
+                            <p>All successful bidders can confirm their winning bid by checking the &ldquo;Sbidu&rdquo;. In addition, all successful bidders will receive an email notifying them of their winning bid after the auction closes.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-title">
+                            <img src="~/Content/images/img-faq.png" alt="css"><span class="title">Security Deposit / Bidding Power </span><span class="right-icon"></span>
+                        </div>
+                        <div class="faq-content">
+                            <p>All successful bidders can confirm their winning bid by checking the &ldquo;Sbidu&rdquo;. In addition, all successful bidders will receive an email notifying them of their winning bid after the auction closes.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-title">
+                            <img src="~/Content/images/img-faq.png" alt="css"><span class="title">Delivery time to the destination port </span><span class="right-icon"></span>
+                        </div>
+                        <div class="faq-content">
+                            <p>All successful bidders can confirm their winning bid by checking the &ldquo;Sbidu&rdquo;. In addition, all successful bidders will receive an email notifying them of their winning bid after the auction closes.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-title">
+                            <img src="~/Content/images/img-faq.png" alt="css"><span class="title">How to register to bid in an auction?</span><span class="right-icon"></span>
+                        </div>
+                        <div class="faq-content">
+                            <p>All successful bidders can confirm their winning bid by checking the &ldquo;Sbidu&rdquo;. In addition, all successful bidders will receive an email notifying them of their winning bid after the auction closes.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item open active">
+                        <div class="faq-title">
+                            <img src="~/Content/images/img-faq.png" alt="css"><span class="title">How will I know if my bid was successful?</span><span class="right-icon"></span>
+                        </div>
+                        <div class="faq-content">
+                            <p>All successful bidders can confirm their winning bid by checking the &ldquo;Sbidu&rdquo;. In addition, all successful bidders will receive an email notifying them of their winning bid after the auction closes.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-title">
+                            <img src="~/Content/images/img-faq.png" alt="css"><span class="title">What happens if I bid on the wrong lot?</span><span class="right-icon"></span>
+                        </div>
+                        <div class="faq-content">
+                            <p>All successful bidders can confirm their winning bid by checking the &ldquo;Sbidu&rdquo;. In addition, all successful bidders will receive an email notifying them of their winning bid after the auction closes.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<!--============= Product Details Section Ends Here =============-->
+
+<script>
+    function foucusAction(contentToAction) {
+        $('html, body').animate({
+            scrollTop: $("#" + contentToAction).offset().top - 110
+        }, "fast");
+    }
+
+    $("#submitBtn").click(function () {
+            $("#formError").html("");
+        var amount = $("#bid_amount").val();
+        if (amount.trim() != "") {
+         $.ajax({
+            url: '@Url.Action("highestBid", "Home")',
+            data : {
+                id : "@Model.product.p_id"
+            }
+        })
+        .done(function (response) {
+            if (amount > parseInt(response)) {
+                $("#submitBtn").attr('disabled', true);
+            $.ajax({
+                url: '@Url.Action("AddAuctionBid","Home")',
+                data : {
+                    amount: amount,
+                        id : "@Model.product.p_id"
+                    }
+            })
+                .done(function (response) {
+                    $("#tableContainer").html(response);
+                    foucusAction("tableContainer");
+                    $("#bid_amount").val("");
+                    $("#submitBtn").removeAttr('disabled')
+                      $.ajax({
+                            url: '@Url.Action("TotalBidsAndTotalBiddersCount", "Home")',
+                            data: {
+                               id : "@Model.product.p_id"
+                            }
+                        })
+                          .done(function (response) {
+                              $("#submitBtn").removeAttr('disabled')
+                              var result = JSON.parse(response);
+                              $("#totalBidders").html(result.TotalBidders);
+                              $("#totalBids").html(result.TotalBids);
+                          })
+                            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                                alert("FAIL");
+                            });
+                })
+                .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("FAIL");
+                    });
+
+                     $.ajax({
+                        url: '@Url.Action("ShowBiddersHistory", "Home")',
+                        data: {
+                            id : "@Model.product.p_id"
+                        }
+                    })
+                    .done(function (response) {
+                        $("#showBiddersHistory").html(response);
+                    })
+                    .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert("FAIL");
+                    });
+            } else {
+                    $("#formError").html("Please enter highest bid");
+                }
+        })
+        .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+            alert("FAIL");
+        });
+        } else {
+            $("#formError").html("Please enter amount");
+        }
+    })
+
+    $("#historyBtn").click(function () {
+        $.ajax({
+                url: '@Url.Action("ShowBiddersHistory", "Home")',
+                data: {
+                    id : "@Model.product.p_id"
+                }
+            })
+        .done(function (response) {
+            $("#showBiddersHistory").html(response);
+        })
+        .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+            alert("FAIL");
+        });
+});
+
+        var highest_amount = 0;
+        $.ajax({
+                url: '@Url.Action("highestBid", "Home")',
+                data : {
+                    id : "@Model.product.p_id"
+                }
+            })
+                .done(function (response) {
+                    highest_amount = response;
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("FAIL");
+            });
+
+    if ($("#bid_counter1").length) {
+        // If you need specific date then comment out 1 and comment in 2
+        // let endDate = "2020/03/20"; //This is 1
+        let endDate = "@Model.product.p_end_date" //This is 2
+        let counterElement = document.querySelector("#bid_counter1");
+        let myCountDown = new ysCountDown(endDate, function (remaining, finished) {
+            let message = "";
+            if (finished) {
+                message = "Time Left";
+
+                      $.ajax({
+                        url: '@Url.Action("WinAuction", "Home")',
+                        data: {
+                            id : "@Model.product.p_id"
+                        }
+                    })
+                          .done(function (response) {
+                              if (response == 0) {
+                                  $("#winAuction_msg").html("No Winner");
+                                  $("#bidForm2").html("");
+                                  $("#bidForm2").hide();
+                                  $("#bidForm").html("");
+                                  $("#bidForm").hide();
+                                  $("#buyNow").html("");
+                                  $("#buyNow").hide();
+                              } else {
+
+                                $.ajax({
+                                    url: '@Url.Action("CartCount","Home")',
+                                })
+                                .done(function (response) {
+                                    $("#cartAmount").html(response);
+                                })
+                                .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                                    alert("FAIL");
+                                });
+
+                                  swal({
+                                      title: " Congrats " + response + "",
+                                      icon: "success",
+                                      button: "OK",
+                                  });
+                                  $("#winAuction_msg").html("<span>Congratulations</span> " + "<span style='color: #43b055;font - weight: 600;'>" + response + "</span>");
+                                  $("#bidForm2").html("");
+                                  $("#bidForm2").hide();
+                                  $("#bidForm").html("");
+                                  $("#bidForm").hide();
+                                  $("#buyNow").html("");
+                                  $("#buyNow").hide();
+                              }
+                    })
+                    .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert("FAIL");
+                    });
+
+            } else {
+                var re_days = remaining.totalDays;
+                var re_hours = remaining.hours;
+                message += re_days + "d  : ";
+                message += re_hours + "h  : ";
+                message += remaining.minutes + "m  : ";
+                message += remaining.seconds + "s";
+            }
+            counterElement.textContent = message;
+        });
+    }
+
+    $("#buynowBtn").click(function () {
+          $.ajax({
+                url: '@Url.Action("CartSingleProduct", "Home")',
+                data : {
+                    id : "@Model.product.p_id"
+                }
+          })
+            .done(function (response) {
+                if (response == 1) {
+                    swal({
+                        title: "Product Add To Cart",
+                        icon: "success",
+                        button: "OK",
+                    });
+                   $.ajax({
+                        url: '@Url.Action("CartCount","Home")',
+                    })
+                    .done(function (response) {
+                        $("#cartAmount").html(response);
+                    })
+                    .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert("FAIL");
+                    });
+
+                } else if (response == 2) {
+                    swal({
+                        title: "Product Already Add To Cart",
+                        icon: "warning",
+                        button: "OK",
+                    });
+                } else {
+                    alert("Product Not Add To Cart")
+                }
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("FAIL");
+            });
+    });
+
+    $("#addToWishlist").click(function () {
+            $.ajax({
+                url: '@Url.Action("AddWishlistItem", "Home")',
+                data : {
+                    id : "@Model.product.p_id"
+                }
+            })
+                .done(function (response) {
+                $.ajax({
+                    url: "@Url.Action("CountWishlistItem", "Home")",
+                })
+                .done(function (response) {
+                    $("#ShowWishlistItemCount").html(response);
+                })
+                .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("FAIL");
+            });
+                var result = JSON.parse(response);
+                if (result.Success) {
+                    if (result.Message == "yes") {
+                        swal({
+                            title: "Product Add To Wishlist",
+                            icon: "success",
+                            button: "OK",
+                        });
+                    }
+                } else if (!result.Success) {
+                    if (result.Message == "no") {
+                        swal({
+                            title: "Product Already Add To Wishlist",
+                            icon: "warning",
+                            button: "OK",
+                        });
+                    }
+                }
+                else if (!result.Success) {
+                    if (result.Message == "error") {
+                        alert("Product Not Add To Cart")
+                    }
+                }
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("FAIL");
+            });
+    });
+
+</script>

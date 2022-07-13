@@ -1,0 +1,486 @@
+﻿@using Auction.Models
+@{
+    db_AuctionEntities db = new db_AuctionEntities();
+
+    var products = db.Products.Where(x => x.p_status == 1).ToList();
+    if (products != null && products.Count > 0)
+    {
+        int countOfZeroStatusProduct = 0;
+        foreach (var product in products)
+        {
+            if (DateTime.Now > Convert.ToDateTime(product.p_end_date))
+            {
+                product.p_status = 0;
+                db.Entry(product).State = System.Data.Entity.EntityState.Modified;
+                db.SaveChanges();
+                countOfZeroStatusProduct++;
+            }
+        }
+
+        if (countOfZeroStatusProduct > 0)
+        {
+            <script>
+                window.location.href = window.location.href;
+            </script>
+        }
+    }
+
+    var categories = db.Categories.Where(x => x.cat_status == 1).OrderByDescending(x => x.cat_id).ToList();
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>@ViewBag.Title - Auction</title>
+
+    <link rel="stylesheet" href="/Content/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/Content/css/all.min.css">
+    <link rel="stylesheet" href="/Content/css/animate.css">
+    <link rel="stylesheet" href="/Content/css/nice-select.css">
+    <link rel="stylesheet" href="/Content/css/owl.min.css">
+    <link rel="stylesheet" href="/Content/css/magnific-popup.css">
+    <link rel="stylesheet" href="/Content/css/flaticon.css">
+    <link rel="stylesheet" href="/Content/css/main.css">
+    <link rel="stylesheet" href="/Content/css/jquery-ui.min.css">
+    <link rel="stylesheet" href="/Content/css/font-awesome.css">
+    <script src="/Content/js/jquery-3.3.1.min.js"></script>
+    <script src="/Content/assets/js/jquery.validate.min.js"></script>
+    <script src="/Content/js/yscountdown.min.js"></script>
+    <script src="/Content/assets/sweetalert.min.js"></script>
+    <script src="/Content/js/main.js"></script>
+    <style>
+        .account-link {
+            font-weight: 500;
+            font-family: "Roboto", sans-serif;
+        }
+
+        .userOption {
+            width: 168px;
+            color: #171d1c;
+            font-size: 16px;
+        }
+
+            .userOption a {
+                font-weight: 600;
+                color: black;
+                width: 100%;
+                padding:5px 0px;
+                border-bottom: 1px solid #bccaea;
+            }
+
+            .userOption a:hover {
+                color: white;
+                background: #3f22b3;
+            }
+    </style>
+</head>
+<body>
+    <!--============= ScrollToTop Section Starts Here =============-->
+    <div style="top:0px;" class="overlayer" id="overlayer">
+        <div class="loader">
+            <div class="loader-inner"></div>
+        </div>
+    </div>
+    <a href="#0" class="scrollToTop"><i class="fas fa-angle-up"></i></a>
+    <div class="overlay"></div>
+    <!--============= ScrollToTop Section Ends Here =============-->
+    <!--============= Header Section Starts Here =============-->
+    <header>
+        <div class="header-top">
+            <div class="container">
+                <div class="header-top-wrapper">
+                    <ul class="customer-support">
+                        <li>
+                            <a href="@Url.Action("ContactUs","Home")" class="mr-3"><i class="fas fa-phone-alt"></i><span class="ml-2 d-none d-sm-inline-block">Customer Support</span></a>
+                        </li>
+                    </ul>
+                    <ul class="cart-button-area">
+                        @if (Session["customer_username"] != null)
+                        {
+                            <li style="padding:0px;">
+                                <a href="@Url.Action("CustomerWishlist","Home")" id="wishlistIcon"><i class="flaticon-heart"></i><span id="ShowWishlistItemCount" style="border-radius: 50%;background: #5a4bcc;font-size: 12px;width: 22px;height: 22px;line-height: 22px;display: block;position: absolute;right: 0;top: 7px;">0</span></a>
+                            </li>
+                            <li id="showCart">
+                                <a href="#0" class="cart-button"><i class="flaticon-shopping-basket"></i><span id="cartAmount" class="amount">0</span></a>
+                            </li>
+
+                        }
+                        @if (Session["customer_username"] != null)
+                        {
+                            if (Session["customer_image"] != null)
+                            {
+                                <li id="user" style="margin-bottom: 5px;">
+                                    <a href="javascript:void(0)" class="user-button"><img src="@Url.Content(Session["customer_image"].ToString())" style="width: 42px;object-fit: cover;height: 42px;border-radius: 36px;" alt="img" /></a>
+                                    <div id="showUserOption" style="background: white;position: absolute;z-index: 111;right: 51px;top: 53px;display: none;">
+                                        <div class="userOption"><a href="@Url.Action("CustomerDashboard","Home")">View Profile</a></div>
+                                        <div class="userOption"><a href="@Url.Action("Order","Home")">My Orders</a></div>
+                                        <div class="userOption"><a href="@Url.Action("CustomerWishlist","Home")">My Wishlist</a></div>
+                                        <div class="userOption"><a href="@Url.Action("Logout","Home")">Logout</a></div>
+                                    </div>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <a href="javascript:void(0)" class="user-button"><i class="flaticon-user"></i></a>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li>
+                                <a href="@Url.Action("Register","Home")" class="text-white account-link">Register</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Login","Home")" class="text-white account-link">Login</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="header-bottom">
+            <div class="container">
+                <div class="header-wrapper">
+                    <div class="logo">
+                        <a href="@Url.Action("Index","Home")">
+                            <img src="/Content/images/logo-logo.png" alt="logo">
+                        </a>
+                    </div>
+                    <ul class="menu ml-auto">
+                        <li>
+                            <a href="@Url.Action("Index","Home")">Home</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("AboutUs","Home")">About</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Shop","Home")">Shop</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Shop","Home")">Products</a>
+                            <ul class="submenu">
+                                @if (categories != null && categories.Count > 0)
+                                {
+                                    foreach (var category in categories)
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("CategoryProduct","Home", new { id = category.cat_id })">@category.cat_name</a>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("ContactUs","Home")">Contact</a>
+                        </li>
+                    </ul>
+                    <form onsubmit="return searchForm()" method="get" action="@Url.Action("Shop","Home")" class="search-form">
+                        <input type="text" id="searchTxt" name="search" value="@Request.QueryString["search"]" placeholder="Search Product....">
+                        <button type="submit"><i class="fas fa-search"></i></button>
+                    </form>
+                    <div class="search-bar d-md-none">
+                        <a href="#0"><i class="fas fa-search"></i></a>
+                    </div>
+                    <div class="header-bar d-lg-none">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!--============= Header Section Ends Here =============-->
+    <!--============= Cart Section Starts Here =============-->
+    <div class="cart-sidebar-area">
+        <div class="top-content">
+            <a href="@Url.Action("Index","Home")" class="logo">
+                <img src="/Content/images/logo-logo2.png" alt="logo">
+            </a>
+            <span class="side-sidebar-close-btn"><i class="fas fa-times"></i></span>
+        </div>
+        <div class="bottom-content">
+            <h4 class="title">Shopping cart</h4>
+            <div class="cart-products" id="cartItems">0</div>
+        </div>  
+    </div>
+    <!--============= Cart Section Ends Here =============-->
+    @RenderBody()
+
+
+
+
+
+
+
+    <!--============= Footer Section Starts Here =============-->
+    <footer class="bg_img padding-top oh sec-footer">
+        <div class="footer-top-shape">
+            <img src="/Content/images/img-footer-top-shape.png" alt="css">
+        </div>
+        <div class="anime-wrapper">
+            <div class="anime-1 plus-anime">
+                <img src="/Content/images/footer-p1.png" alt="footer">
+            </div>
+            <div class="anime-2 plus-anime">
+                <img src="/Content/images/footer-p2.png" alt="footer">
+            </div>
+            <div class="anime-3 plus-anime">
+                <img src="/Content/images/footer-p3.png" alt="footer">
+            </div>
+            <div class="anime-5 zigzag">
+                <img src="/Content/images/footer-c2.png" alt="footer">
+            </div>
+            <div class="anime-6 zigzag">
+                <img src="/Content/images/footer-c3.png" alt="footer">
+            </div>
+            <div class="anime-7 zigzag">
+                <img src="/Content/images/footer-c4.png" alt="footer">
+            </div>
+        </div>
+        <div class="footer-top padding-bottom padding-top">
+            <div class="container">
+                <div class="row mb--60">
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="footer-widget widget-links">
+                            <h5 class="title">Auction Categories</h5>
+                            <ul class="links-list">
+                                <li>
+                                    <a href="#0">Ending Now</a>
+                                </li>
+                                <li>
+                                    <a href="#0">Vehicles</a>
+                                </li>
+                                <li>
+                                    <a href="#0">Watches</a>
+                                </li>
+                                <li>
+                                    <a href="#0">Electronics</a>
+                                </li>
+                                <li>
+                                    <a href="#0">Real Estate</a>
+                                </li>
+                                <li>
+                                    <a href="#0">Jewelry</a>
+                                </li>
+                                <li>
+                                    <a href="#0">Art</a>
+                                </li>
+                                <li>
+                                    <a href="#0">Sports &amp; Outdoor</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="footer-widget widget-links">
+                            <h5 class="title">About Us</h5>
+                            <ul class="links-list">
+                                <li>
+                                    <a href="#0">About Sbidu</a>
+                                </li>
+                                <li>
+                                    <a href="#0">Help</a>
+                                </li>
+                                <li>
+                                    <a href="#0">Affiliates</a>
+                                </li>
+                                <li>
+                                    <a href="#0">Jobs</a>
+                                </li>
+                                <li>
+                                    <a href="#0">Press</a>
+                                </li>
+                                <li>
+                                    <a href="#0">Our blog</a>
+                                </li>
+                                <li>
+                                    <a href="#0">Collectors' portal</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="footer-widget widget-links">
+                            <h5 class="title">We're Here to Help</h5>
+                            <ul class="links-list">
+                                <li>
+                                    <a href="#0">Your Account</a>
+                                </li>
+                                <li>
+                                    <a href="#0">Safe and Secure</a>
+                                </li>
+                                <li>
+                                    <a href="#0">Shipping Information</a>
+                                </li>
+                                <li>
+                                    <a href="#0">Contact Us</a>
+                                </li>
+                                <li>
+                                    <a href="#0">Help &amp; FAQ</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="footer-widget widget-follow">
+                            <h5 class="title">Follow Us</h5>
+                            <ul class="links-list">
+                                <li>
+                                    <a href="#0"><i class="fas fa-phone-alt"></i>(646) 663-4575</a>
+                                </li>
+                                <li>
+                                    <a href="#0"><i class="fas fa-blender-phone"></i>(646) 968-0608</a>
+                                </li>
+                                <li>
+                                    <a href="#0"><i class="fas fa-envelope-open-text"></i><span class="__cf_email__" data-cfemail="d6beb3baa696b3b8b1b9a2beb3bbb3f8b5b9bb">[email&nbsp;protected]</span></a>
+                                </li>
+                                <li>
+                                    <a href="#0"><i class="fas fa-location-arrow"></i>1201 Broadway Suite</a>
+                                </li>
+                            </ul>
+                            <ul class="social-icons">
+                                <li>
+                                    <a href="#0" class="active"><i class="fab fa-facebook-f"></i></a>
+                                </li>
+                                <li>
+                                    <a href="#0"><i class="fab fa-twitter"></i></a>
+                                </li>
+                                <li>
+                                    <a href="#0"><i class="fab fa-instagram"></i></a>
+                                </li>
+                                <li>
+                                    <a href="#0"><i class="fab fa-linkedin-in"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="copyright-area">
+                    <div class="footer-bottom-wrapper">
+                        <div class="logo">
+                            <a href="index.html"><img src="/Content/images/logo-footer-logo.png" alt="logo"></a>
+                        </div>
+                        <ul class="gateway-area">
+                            <li>
+                                <a href="#0"><img src="/Content/images/footer-paypal.png" alt="footer"></a>
+                            </li>
+                            <li>
+                                <a href="#0"><img src="/Content/images/footer-visa.png" alt="footer"></a>
+                            </li>
+                            <li>
+                                <a href="#0"><img src="/Content/images/footer-discover.png" alt="footer"></a>
+                            </li>
+                            <li>
+                                <a href="#0"><img src="/Content/images/footer-mastercard.png" alt="footer"></a>
+                            </li>
+                        </ul>
+                        <div class="copyright"><p>&copy; Copyright 2022 | <a href="#0">Sbidu</a> By <a href="#0">Uiaxis</a></p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!--============= Footer Section Ends Here =============-->
+    <script data-cfasync="false" src="/Content/js/cloudflare-static-email-decode.min.js"></script>
+    <script src="/Content/js/modernizr-3.6.0.min.js"></script>
+    <script src="/Content/js/plugins.js"></script>
+    <script src="/Content/js/bootstrap.min.js"></script>
+    <script src="/Content/js/isotope.pkgd.min.js"></script>
+    <script src="/Content/js/wow.min.js"></script>
+    <script src="/Content/js/waypoints.js"></script>
+    <script src="/Content/js/nice-select.js"></script>
+    <script src="/Content/js/counterup.min.js"></script>
+    <script src="/Content/js/owl.min.js"></script>
+    <script src="/Content/js/magnific-popup.min.js"></script>
+    <script src="/Content/js/jquery-ui.min.js"></script>
+
+    <script>
+             $.ajax({
+                    url: "@Url.Action("CartCount","Home")",
+                })
+                 .done(function (response) {
+                     if (response == 0) {
+                         if (window.location.href == "@Url.Action("Checkout", "Home")") {
+                             window.location.href = "@Url.Action("Index","Home")";
+                         }
+                     }
+                    $("#cartAmount").html(response);
+                })
+                .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("FAIL");
+            });
+
+            $.ajax({
+                    url: "@Url.Action("CountWishlistItem", "Home")",
+                })
+                .done(function (response) {
+                    $("#ShowWishlistItemCount").html(response);
+                })
+                .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("FAIL");
+            });
+
+        $("#showCart").click(function () {
+            $.ajax({
+                url: "@Url.Action("Cart","Home")",
+            })
+                .done(function (response) {
+                    if (response == 0) {
+                        $(".cart-sidebar-area").hide();
+                        $(".cart-sidebar-area").html("");
+                        $(".overlay").removeClass('active');
+                        window.location.href = '/Home/Login';
+                    } else {
+                        $("#cartItems").html(response);
+                    }
+                })
+                .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("FAIL");
+                });
+
+          $.ajax({
+                    url: "@Url.Action("CartCount","Home")",
+                })
+                 .done(function (response) {
+                      if (response == 0) {
+                         if (window.location.pathname == "@Url.Action("Checkout", "Home")") {
+                             window.location.href = "@Url.Action("Index","Home")";
+                         }
+                     }
+                    $("#cartAmount").html(response);
+                })
+                .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("FAIL");
+            });
+        });
+
+        function searchForm() {
+            if ($("#searchTxt").val().trim() == "") {
+                window.location.href = "@Url.Action("Index","Home")";
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        $("#user").click(function () {
+            $("#showUserOption").toggle();
+        });
+
+    </script>
+
+</body>
+
+</html>
+
+

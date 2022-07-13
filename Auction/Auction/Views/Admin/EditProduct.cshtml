@@ -1,0 +1,207 @@
+﻿@model Auction.Models.Product
+@{
+    ViewBag.Title = "Edit";
+    Layout = null;
+    string trueChecked = Model.p_status == 1 ? "checked" : string.Empty;
+    string falseChecked = Model.p_status == 0 ? "checked" : string.Empty;
+
+    string isFeatured_trueChecked = Model.p_featured_product == 1 ? "checked" : string.Empty;
+    string isFeatured_falseChecked = Model.p_featured_product == 0 ? "checked" : string.Empty;
+}
+
+<h2 class="text-center">Edit Product</h2>
+<div class="content-wrapper p-5">
+
+    <div class="row">
+        <div class="col-lg-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <form id="formData">
+                        <div class="form-group">
+                            <input type="hidden" name="p_id" value="@Model.p_id" />
+                            <label style="font-size:15px;font-weight:bold;margin-top:10px;">Category</label>
+                            <select name="p_fk_cat" class="form-control">
+                                @foreach (var item in ViewBag.category)
+                                {
+                                    if (Model.p_fk_cat == item.cat_id)
+                                    {
+                                        <option value="@item.cat_id" selected>@item.cat_name</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@item.cat_id">@item.cat_name</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;font-weight:bold;margin-top:10px;">Name</label>
+                            <input type="text" placeholder="Enter Product Name" style="padding:12px;" name="p_name" class="form-control" value="@Model.p_name" />
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;font-weight:bold;margin-top:10px;">Price</label>
+                            <input type="text" placeholder="Enter Price" style="padding:12px;" name="p_price" class="form-control" value="@Model.p_price" />
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;font-weight:bold;margin-top:10px;">Description</label>
+                            <textarea placeholder="Enter Description" style="padding:12px;" name="p_description" class="form-control">@Model.p_description</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;font-weight:bold;margin-top:10px;">IsFeatured</label>
+                            <div class="input-group">
+                                <div class="radio form-control">
+                                    <label><input type="radio" name="p_featured_product" value="1" @isFeatured_trueChecked /> Yes</label>
+                                </div>
+                                <div class="radio form-control">
+                                    <label><input type="radio" name="p_featured_product" value="0" @isFeatured_falseChecked /> No</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group  d-flex">
+                            <label style="font-size:15px;font-weight:bold;margin-top:10px;">Image</label>
+
+                            <img style="width: 220px;margin:20px;" class="img-fluid" id="p_image" src="@Url.Content(ViewBag.image.ToString())" />
+                        </div>
+                        <div class="form-control">
+                            <input type="hidden" id="ImageURL" name="ImageURL" />
+                            <input type="hidden" id="OldImageURL" value="@ViewBag.image.ToString()" name="OldImageURL" />
+                            <input id="imageUpload" name="Image" type="file" accept=".png, .jpg" />
+                            <span style="display:none;" id="image_upload_Error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;font-weight:bold;margin-top:10px;">Status</label>
+                            <div class="input-group">
+                                <div class="radio form-control">
+                                    <label><input type="radio" name="p_status" value="1" @trueChecked /> Active</label>
+                                </div>
+                                <div class="radio form-control">
+                                    <label><input type="radio" name="p_status" value="0" @falseChecked /> Deactive</label>
+                                </div>
+                                <input type="hidden" name="pageNo" value="@ViewBag.pageNo" />
+                                <input type="hidden" name="search" value="@ViewBag.search" />
+                            </div>
+                        </div>
+                        <br />
+                        <button class="btn btn-primary" id="editBtn" type="button">Edit</button>
+                        <button class="btn btn-primary" id="cancelBtn" type="button">Cancel</button>
+                    </form>
+                    <div id="form_error" style="color:red;font-weight:bold;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+      $("#imageUpload").change(function () {
+        var element = this;
+
+        var formData = new FormData();
+
+        var totalFiles = element.files.length;
+
+        for (var i = 0; i < totalFiles; i++) {
+            var file = element.files[i];
+            formData.append("Photo", file);
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("UploadImage", "Shared")',
+            dataType: 'json',
+            data: formData,
+            contentType: false,
+            processData: false
+        })
+            .done(function (response) {
+                if (response.Success) {
+                    $("#ImageURL").val(response.ImageURL);
+                    $("#p_image").attr("src", response.ImageURL);
+                }
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("FAIL");
+            });
+    });
+
+    $('#formData').validate({
+        rules: {
+            cat_name: {
+                required: true,
+                maxlength: 50,
+                normalizer: function (value) {
+                    return $.trim(value);
+                }
+            },
+        },
+        messages: {
+            cat_name: {
+                required: 'Name is required',
+                maxlength: 'Maximum Length is 50'
+            },
+        }
+    });
+
+    $("#editBtn").click(function () {
+        $("#form_error").html("");
+        if ($("#formData").valid()) {
+            if ($("#imageUpload").val()) {
+                var fup = document.getElementById('imageUpload');
+                var fileName = fup.value;
+                var ext = fileName.substring(fileName.lastIndexOf('.') + 1);
+                if (ext == "png" || ext == "jpg" || ext == "jpeg") {
+                    $.ajax({
+                        url: '@Url.Action("EditProduct","Admin")',
+                        type: 'post',
+                        data: $("#formData").serialize()
+                    })
+                        .done(function (response) {
+                            if (response == "no") {
+                                $("#form_error").html("Product already exist");
+                            } else {
+                                $("#tableContainer").html(response);
+                                $("#actionContainer").html("");
+                            }
+                        })
+                        .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                            alert("FAIL");
+                        });
+                }
+            } else {
+                  $.ajax({
+                        url: '@Url.Action("EditProduct", "Admin")',
+                        type: 'post',
+                        data: $("#formData").serialize()
+                    })
+                        .done(function (response) {
+                            if (response == "no") {
+                                $("#form_error").html("Product already exist");
+                            } else {
+                                $("#tableContainer").html(response);
+                                $("#actionContainer").html("");
+                            }
+                        })
+                        .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                            alert("FAIL");
+                        });
+            }
+        }
+    });
+
+     $("#cancelBtn").click(function () {
+            $.ajax({
+                url: '@Url.Action("ProductTable", "Admin")',
+                data: {
+                    pageNo : "@ViewBag.pageNo",
+                    search : "@ViewBag.search"
+                }   
+            })
+                .done(function (response) {
+                    $("#tableContainer").html(response);
+                    $("#actionContainer").html("");
+                })
+                .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("FAIL");
+                });
+    });
+</script>

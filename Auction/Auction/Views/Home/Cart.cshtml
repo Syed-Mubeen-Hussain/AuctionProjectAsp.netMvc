@@ -1,0 +1,72 @@
+﻿@model Auction.ViewModels.CartViewModel
+
+@{
+    ViewBag.Title = "Cart";
+    Layout = null;
+}
+
+@if (Model != null && Model.products.Count > 0)
+{
+    foreach (var product in Model.products)
+    {
+        <div class="single-product-item">
+            <div class="thumb">
+                @if (Model != null && Model.images.Count > 0)
+                {
+                    foreach (var img in Model.images)
+                    {
+                        if (img.img_fk_product_id == product.p_id)
+                        {
+                            <div><img src="@Url.Content(img.img_text)" alt="shop"></div>
+                        }
+                    }
+                }
+            </div>
+            <div class="content">
+                <h4 class="title"><a href="javascript:void(0)">@product.p_name</a></h4>
+                <div class="price"><span class="pprice">Rs @product.p_price</span></div>
+                <a href="javascript:void(0)" data-id="@product.p_id" class="removeProductFromCartBtn remove-cart">Remove</a>
+            </div>
+        </div>
+    }
+    <div class="btn-wrapper text-center">
+        <a href="@Url.Action("Checkout","Home")" class="custom-button"><span>Checkout</span></a>
+    </div>
+}
+else
+{
+    <div style="display: flex;justify-content: center;align-items: center;" class="single-product-item">
+        <div style="color: yellow;font-weight: bold;">No Product In Cart</div>
+    </div>
+}
+
+<script>
+        $(".removeProductFromCartBtn").click(function () {
+             $.ajax({
+                 url: '@Url.Action("RemoveCartItem","Home")',
+                 data: {
+                     id : $(this).attr('data-id')
+                 }
+            })
+                .done(function (response) {
+                    $("#cartItems").html(response);
+                   $.ajax({
+                        url: "@Url.Action("CartCount","Home")",
+                    })
+                 .done(function (response) {
+                     if (response == 0) {
+                         if (window.location.pathname == "@Url.Action("Checkout", "Home")") {
+                             window.location.href = "@Url.Action("Index","Home")";
+                         }
+                     }
+                    $("#cartAmount").html(response);
+                })
+                .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("FAIL");
+            });
+                })
+                .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("FAIL");
+                });
+        })
+</script>

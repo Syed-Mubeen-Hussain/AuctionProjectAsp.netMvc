@@ -1,0 +1,861 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="db_AuctionModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Admin">
+          <Key>
+            <PropertyRef Name="ad_id" />
+          </Key>
+          <Property Name="ad_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ad_email" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ad_username" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ad_password" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Bids">
+          <Key>
+            <PropertyRef Name="bid_id" />
+          </Key>
+          <Property Name="bid_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="bid_fk_cus" Type="int" />
+          <Property Name="bid_amount" Type="bigint" Nullable="false" />
+          <Property Name="bid_timeStamp" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="bid_fk_product" Type="int" />
+        </EntityType>
+        <EntityType Name="Cart">
+          <Key>
+            <PropertyRef Name="car_id" />
+          </Key>
+          <Property Name="car_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="p_id" Type="int" Nullable="false" />
+          <Property Name="cus_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="cat_id" />
+          </Key>
+          <Property Name="cat_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="cat_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="cat_image" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="cat_status" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Contact">
+          <Key>
+            <PropertyRef Name="cont_id" />
+          </Key>
+          <Property Name="cont_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="cont_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="cont_email" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="cont_message" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="c_id" />
+          </Key>
+          <Property Name="c_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="c_firstName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="c_lastName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="c_age" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="c_phone" Type="bigint" Nullable="false" />
+          <Property Name="c_gender" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="c_address" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="c_image" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="c_email" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="c_userName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="c_password" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="register_date" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="images">
+          <Key>
+            <PropertyRef Name="img_id" />
+          </Key>
+          <Property Name="img_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="img_text" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="img_fk_product_id" Type="int" />
+          <Property Name="img_selected" Type="int" />
+        </EntityType>
+        <EntityType Name="order">
+          <Key>
+            <PropertyRef Name="o_id" />
+          </Key>
+          <Property Name="o_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="o_fk_cus_id" Type="int" />
+          <Property Name="o_address" Type="varchar(max)" Nullable="false" />
+          <Property Name="o_phone" Type="bigint" Nullable="false" />
+          <Property Name="o_email" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="o_zip" Type="int" Nullable="false" />
+          <Property Name="o_total_amout" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="o_status" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="order_details">
+          <Key>
+            <PropertyRef Name="od_id" />
+          </Key>
+          <Property Name="od_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="od_fk_product_id" Type="int" />
+          <Property Name="od_fk_o" Type="int" />
+        </EntityType>
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="p_id" />
+          </Key>
+          <Property Name="p_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="p_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="p_price" Type="int" Nullable="false" />
+          <Property Name="p_description" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="p_dateOfCreation" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="p_status" Type="int" Nullable="false" />
+          <Property Name="p_fk_cat" Type="int" />
+          <Property Name="p_start_date" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="p_end_date" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="p_increment" Type="bigint" Nullable="false" />
+          <Property Name="p_featured_product" Type="int" />
+        </EntityType>
+        <EntityType Name="Product_View">
+          <Key>
+            <PropertyRef Name="av_id" />
+          </Key>
+          <Property Name="av_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="av_fk_product_id" Type="int" />
+          <Property Name="av_veiws_count" Type="decimal" Precision="18" Scale="0" />
+        </EntityType>
+        <EntityType Name="Wishlist">
+          <Key>
+            <PropertyRef Name="w_id" />
+          </Key>
+          <Property Name="w_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="w_fk_cus_id" Type="int" />
+          <Property Name="w_fk_product_id" Type="int" />
+        </EntityType>
+        <Association Name="FK__Bids__bid_fk_cus__68487DD7">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
+          <End Role="Bids" Type="Self.Bids" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="c_id" />
+            </Principal>
+            <Dependent Role="Bids">
+              <PropertyRef Name="bid_fk_cus" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Bids__bid_fk_pro__693CA210">
+          <End Role="Product" Type="Self.Product" Multiplicity="0..1" />
+          <End Role="Bids" Type="Self.Bids" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="p_id" />
+            </Principal>
+            <Dependent Role="Bids">
+              <PropertyRef Name="bid_fk_product" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Cart__cus_id__4222D4EF">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
+          <End Role="Cart" Type="Self.Cart" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="c_id" />
+            </Principal>
+            <Dependent Role="Cart">
+              <PropertyRef Name="cus_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Cart__p_id__412EB0B6">
+          <End Role="Product" Type="Self.Product" Multiplicity="1" />
+          <End Role="Cart" Type="Self.Cart" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="p_id" />
+            </Principal>
+            <Dependent Role="Cart">
+              <PropertyRef Name="p_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__images__img_fk_p__5CD6CB2B">
+          <End Role="Product" Type="Self.Product" Multiplicity="0..1" />
+          <End Role="images" Type="Self.images" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="p_id" />
+            </Principal>
+            <Dependent Role="images">
+              <PropertyRef Name="img_fk_product_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__order__o_fk_cus___44FF419A">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
+          <End Role="order" Type="Self.order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="c_id" />
+            </Principal>
+            <Dependent Role="order">
+              <PropertyRef Name="o_fk_cus_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__order_det__od_fk__47DBAE45">
+          <End Role="Product" Type="Self.Product" Multiplicity="0..1" />
+          <End Role="order_details" Type="Self.order_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="p_id" />
+            </Principal>
+            <Dependent Role="order_details">
+              <PropertyRef Name="od_fk_product_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__order_det__od_fk__48CFD27E">
+          <End Role="order" Type="Self.order" Multiplicity="0..1" />
+          <End Role="order_details" Type="Self.order_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="order">
+              <PropertyRef Name="o_id" />
+            </Principal>
+            <Dependent Role="order_details">
+              <PropertyRef Name="od_fk_o" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Product__p_fk_ca__2A4B4B5E">
+          <End Role="Category" Type="Self.Category" Multiplicity="0..1" />
+          <End Role="Product" Type="Self.Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="cat_id" />
+            </Principal>
+            <Dependent Role="Product">
+              <PropertyRef Name="p_fk_cat" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Product_V__av_fk__3B75D760">
+          <End Role="Product" Type="Self.Product" Multiplicity="0..1" />
+          <End Role="Product_View" Type="Self.Product_View" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="p_id" />
+            </Principal>
+            <Dependent Role="Product_View">
+              <PropertyRef Name="av_fk_product_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Wishlist__w_fk_c__6FE99F9F">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
+          <End Role="Wishlist" Type="Self.Wishlist" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="c_id" />
+            </Principal>
+            <Dependent Role="Wishlist">
+              <PropertyRef Name="w_fk_cus_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Wishlist__w_fk_p__70DDC3D8">
+          <End Role="Product" Type="Self.Product" Multiplicity="0..1" />
+          <End Role="Wishlist" Type="Self.Wishlist" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="p_id" />
+            </Principal>
+            <Dependent Role="Wishlist">
+              <PropertyRef Name="w_fk_product_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="db_AuctionModelStoreContainer">
+          <EntitySet Name="Admin" EntityType="Self.Admin" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Bids" EntityType="Self.Bids" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Cart" EntityType="Self.Cart" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Contact" EntityType="Self.Contact" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="images" EntityType="Self.images" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="order" EntityType="Self.order" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="order_details" EntityType="Self.order_details" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Product" EntityType="Self.Product" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Product_View" EntityType="Self.Product_View" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Wishlist" EntityType="Self.Wishlist" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Bids__bid_fk_cus__68487DD7" Association="Self.FK__Bids__bid_fk_cus__68487DD7">
+            <End Role="Customer" EntitySet="Customer" />
+            <End Role="Bids" EntitySet="Bids" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Bids__bid_fk_pro__693CA210" Association="Self.FK__Bids__bid_fk_pro__693CA210">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="Bids" EntitySet="Bids" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Cart__cus_id__4222D4EF" Association="Self.FK__Cart__cus_id__4222D4EF">
+            <End Role="Customer" EntitySet="Customer" />
+            <End Role="Cart" EntitySet="Cart" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Cart__p_id__412EB0B6" Association="Self.FK__Cart__p_id__412EB0B6">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="Cart" EntitySet="Cart" />
+          </AssociationSet>
+          <AssociationSet Name="FK__images__img_fk_p__5CD6CB2B" Association="Self.FK__images__img_fk_p__5CD6CB2B">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="images" EntitySet="images" />
+          </AssociationSet>
+          <AssociationSet Name="FK__order__o_fk_cus___44FF419A" Association="Self.FK__order__o_fk_cus___44FF419A">
+            <End Role="Customer" EntitySet="Customer" />
+            <End Role="order" EntitySet="order" />
+          </AssociationSet>
+          <AssociationSet Name="FK__order_det__od_fk__47DBAE45" Association="Self.FK__order_det__od_fk__47DBAE45">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="order_details" EntitySet="order_details" />
+          </AssociationSet>
+          <AssociationSet Name="FK__order_det__od_fk__48CFD27E" Association="Self.FK__order_det__od_fk__48CFD27E">
+            <End Role="order" EntitySet="order" />
+            <End Role="order_details" EntitySet="order_details" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Product__p_fk_ca__2A4B4B5E" Association="Self.FK__Product__p_fk_ca__2A4B4B5E">
+            <End Role="Category" EntitySet="Category" />
+            <End Role="Product" EntitySet="Product" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Product_V__av_fk__3B75D760" Association="Self.FK__Product_V__av_fk__3B75D760">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="Product_View" EntitySet="Product_View" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Wishlist__w_fk_c__6FE99F9F" Association="Self.FK__Wishlist__w_fk_c__6FE99F9F">
+            <End Role="Customer" EntitySet="Customer" />
+            <End Role="Wishlist" EntitySet="Wishlist" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Wishlist__w_fk_p__70DDC3D8" Association="Self.FK__Wishlist__w_fk_p__70DDC3D8">
+            <End Role="Product" EntitySet="Product" />
+            <End Role="Wishlist" EntitySet="Wishlist" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="db_AuctionModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Admin">
+          <Key>
+            <PropertyRef Name="ad_id" />
+          </Key>
+          <Property Name="ad_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ad_email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ad_username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ad_password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Bid">
+          <Key>
+            <PropertyRef Name="bid_id" />
+          </Key>
+          <Property Name="bid_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="bid_fk_cus" Type="Int32" />
+          <Property Name="bid_amount" Type="Int64" Nullable="false" />
+          <Property Name="bid_timeStamp" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Customer" Relationship="Self.FK__Bids__bid_fk_cus__4BAC3F29" FromRole="Bids" ToRole="Customer" />
+          <Property Name="bid_fk_product" Type="Int32" />
+          <NavigationProperty Name="Product" Relationship="db_AuctionModel.FK__Bids__bid_fk_pro__6477ECF3" FromRole="Bid" ToRole="Product" />
+        </EntityType>
+        <EntityType Name="Cart">
+          <Key>
+            <PropertyRef Name="car_id" />
+          </Key>
+          <Property Name="car_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="p_id" Type="Int32" Nullable="false" />
+          <Property Name="cus_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Customer" Relationship="Self.FK__Cart__cus_id__4222D4EF" FromRole="Cart" ToRole="Customer" />
+          <NavigationProperty Name="Product" Relationship="Self.FK__Cart__p_id__412EB0B6" FromRole="Cart" ToRole="Product" />
+        </EntityType>
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="cat_id" />
+          </Key>
+          <Property Name="cat_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="cat_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="cat_image" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="cat_status" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Products" Relationship="Self.FK__Product__p_fk_ca__2A4B4B5E" FromRole="Category" ToRole="Product" />
+        </EntityType>
+        <EntityType Name="Contact">
+          <Key>
+            <PropertyRef Name="cont_id" />
+          </Key>
+          <Property Name="cont_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="cont_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="cont_email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="cont_message" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="c_id" />
+          </Key>
+          <Property Name="c_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="c_firstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="c_lastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="c_age" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="c_phone" Type="Int64" Nullable="false" />
+          <Property Name="c_gender" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="c_address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="c_image" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="c_email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="c_userName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="c_password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="register_date" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Bids" Relationship="Self.FK__Bids__bid_fk_cus__4BAC3F29" FromRole="Customer" ToRole="Bids" />
+          <NavigationProperty Name="Carts" Relationship="Self.FK__Cart__cus_id__4222D4EF" FromRole="Customer" ToRole="Cart" />
+          <NavigationProperty Name="orders" Relationship="Self.FK__order__o_fk_cus___44FF419A" FromRole="Customer" ToRole="order" />
+          <NavigationProperty Name="Wishlists" Relationship="db_AuctionModel.FK__Wishlist__w_fk_c__6FE99F9F" FromRole="Customer" ToRole="Wishlist" />
+        </EntityType>
+        <EntityType Name="image">
+          <Key>
+            <PropertyRef Name="img_id" />
+          </Key>
+          <Property Name="img_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="img_text" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="img_fk_product_id" Type="Int32" />
+          <Property Name="img_selected" Type="Int32" />
+          <NavigationProperty Name="Product" Relationship="Self.FK__images__img_fk_p__5CD6CB2B" FromRole="images" ToRole="Product" />
+        </EntityType>
+        <EntityType Name="order">
+          <Key>
+            <PropertyRef Name="o_id" />
+          </Key>
+          <Property Name="o_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="o_fk_cus_id" Type="Int32" />
+          <Property Name="o_address" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="o_phone" Type="Int64" Nullable="false" />
+          <Property Name="o_email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="o_zip" Type="Int32" Nullable="false" />
+          <Property Name="o_total_amout" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <Property Name="o_status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Customer" Relationship="Self.FK__order__o_fk_cus___44FF419A" FromRole="order" ToRole="Customer" />
+          <NavigationProperty Name="order_details" Relationship="Self.FK__order_det__od_fk__48CFD27E" FromRole="order" ToRole="order_details" />
+        </EntityType>
+        <EntityType Name="order_details">
+          <Key>
+            <PropertyRef Name="od_id" />
+          </Key>
+          <Property Name="od_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="od_fk_product_id" Type="Int32" />
+          <Property Name="od_fk_o" Type="Int32" />
+          <NavigationProperty Name="order" Relationship="Self.FK__order_det__od_fk__48CFD27E" FromRole="order_details" ToRole="order" />
+          <NavigationProperty Name="Product" Relationship="Self.FK__order_det__od_fk__47DBAE45" FromRole="order_details" ToRole="Product" />
+        </EntityType>
+        <EntityType Name="Product">
+          <Key>
+            <PropertyRef Name="p_id" />
+          </Key>
+          <Property Name="p_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="p_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="p_price" Type="Int32" Nullable="false" />
+          <Property Name="p_description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="p_dateOfCreation" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="p_status" Type="Int32" Nullable="false" />
+          <Property Name="p_fk_cat" Type="Int32" />
+          <Property Name="p_start_date" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="p_end_date" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="p_increment" Type="Int64" Nullable="false" />
+          <Property Name="p_featured_product" Type="Int32" />
+          <NavigationProperty Name="Carts" Relationship="Self.FK__Cart__p_id__412EB0B6" FromRole="Product" ToRole="Cart" />
+          <NavigationProperty Name="Category" Relationship="Self.FK__Product__p_fk_ca__2A4B4B5E" FromRole="Product" ToRole="Category" />
+          <NavigationProperty Name="images" Relationship="Self.FK__images__img_fk_p__5CD6CB2B" FromRole="Product" ToRole="images" />
+          <NavigationProperty Name="order_details" Relationship="Self.FK__order_det__od_fk__47DBAE45" FromRole="Product" ToRole="order_details" />
+          <NavigationProperty Name="Product_View" Relationship="Self.FK__Product_V__av_fk__3B75D760" FromRole="Product" ToRole="Product_View" />
+          <NavigationProperty Name="Bids" Relationship="db_AuctionModel.FK__Bids__bid_fk_pro__6477ECF3" FromRole="Product" ToRole="Bid" />
+          <NavigationProperty Name="Wishlists" Relationship="db_AuctionModel.FK__Wishlist__w_fk_p__70DDC3D8" FromRole="Product" ToRole="Wishlist" />
+        </EntityType>
+        <EntityType Name="Product_View">
+          <Key>
+            <PropertyRef Name="av_id" />
+          </Key>
+          <Property Name="av_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="av_fk_product_id" Type="Int32" />
+          <Property Name="av_veiws_count" Type="Decimal" Precision="18" Scale="0" />
+          <NavigationProperty Name="Product" Relationship="Self.FK__Product_V__av_fk__3B75D760" FromRole="Product_View" ToRole="Product" />
+        </EntityType>
+        <Association Name="FK__Bids__bid_fk_cus__4BAC3F29">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
+          <End Role="Bids" Type="Self.Bid" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="c_id" />
+            </Principal>
+            <Dependent Role="Bids">
+              <PropertyRef Name="bid_fk_cus" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Cart__cus_id__4222D4EF">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
+          <End Role="Cart" Type="Self.Cart" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="c_id" />
+            </Principal>
+            <Dependent Role="Cart">
+              <PropertyRef Name="cus_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Cart__p_id__412EB0B6">
+          <End Role="Product" Type="Self.Product" Multiplicity="1" />
+          <End Role="Cart" Type="Self.Cart" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="p_id" />
+            </Principal>
+            <Dependent Role="Cart">
+              <PropertyRef Name="p_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Product__p_fk_ca__2A4B4B5E">
+          <End Role="Category" Type="Self.Category" Multiplicity="0..1" />
+          <End Role="Product" Type="Self.Product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="cat_id" />
+            </Principal>
+            <Dependent Role="Product">
+              <PropertyRef Name="p_fk_cat" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__order__o_fk_cus___44FF419A">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
+          <End Role="order" Type="Self.order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="c_id" />
+            </Principal>
+            <Dependent Role="order">
+              <PropertyRef Name="o_fk_cus_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__images__img_fk_p__5CD6CB2B">
+          <End Role="Product" Type="Self.Product" Multiplicity="0..1" />
+          <End Role="images" Type="Self.image" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="p_id" />
+            </Principal>
+            <Dependent Role="images">
+              <PropertyRef Name="img_fk_product_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__order_det__od_fk__48CFD27E">
+          <End Role="order" Type="Self.order" Multiplicity="0..1" />
+          <End Role="order_details" Type="Self.order_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="order">
+              <PropertyRef Name="o_id" />
+            </Principal>
+            <Dependent Role="order_details">
+              <PropertyRef Name="od_fk_o" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__order_det__od_fk__47DBAE45">
+          <End Role="Product" Type="Self.Product" Multiplicity="0..1" />
+          <End Role="order_details" Type="Self.order_details" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="p_id" />
+            </Principal>
+            <Dependent Role="order_details">
+              <PropertyRef Name="od_fk_product_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Product_V__av_fk__3B75D760">
+          <End Role="Product" Type="Self.Product" Multiplicity="0..1" />
+          <End Role="Product_View" Type="Self.Product_View" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="p_id" />
+            </Principal>
+            <Dependent Role="Product_View">
+              <PropertyRef Name="av_fk_product_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="db_AuctionEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Admins" EntityType="Self.Admin" />
+          <EntitySet Name="Bids" EntityType="Self.Bid" />
+          <EntitySet Name="Carts" EntityType="Self.Cart" />
+          <EntitySet Name="Categories" EntityType="Self.Category" />
+          <EntitySet Name="Contacts" EntityType="Self.Contact" />
+          <EntitySet Name="Customers" EntityType="Self.Customer" />
+          <EntitySet Name="images" EntityType="Self.image" />
+          <EntitySet Name="orders" EntityType="Self.order" />
+          <EntitySet Name="order_details" EntityType="Self.order_details" />
+          <EntitySet Name="Products" EntityType="Self.Product" />
+          <EntitySet Name="Product_View" EntityType="Self.Product_View" />
+          <AssociationSet Name="FK__Bids__bid_fk_cus__4BAC3F29" Association="Self.FK__Bids__bid_fk_cus__4BAC3F29">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="Bids" EntitySet="Bids" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Cart__cus_id__4222D4EF" Association="Self.FK__Cart__cus_id__4222D4EF">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="Cart" EntitySet="Carts" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Cart__p_id__412EB0B6" Association="Self.FK__Cart__p_id__412EB0B6">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="Cart" EntitySet="Carts" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Product__p_fk_ca__2A4B4B5E" Association="Self.FK__Product__p_fk_ca__2A4B4B5E">
+            <End Role="Category" EntitySet="Categories" />
+            <End Role="Product" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK__order__o_fk_cus___44FF419A" Association="Self.FK__order__o_fk_cus___44FF419A">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="order" EntitySet="orders" />
+          </AssociationSet>
+          <AssociationSet Name="FK__images__img_fk_p__5CD6CB2B" Association="Self.FK__images__img_fk_p__5CD6CB2B">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="images" EntitySet="images" />
+          </AssociationSet>
+          <AssociationSet Name="FK__order_det__od_fk__48CFD27E" Association="Self.FK__order_det__od_fk__48CFD27E">
+            <End Role="order" EntitySet="orders" />
+            <End Role="order_details" EntitySet="order_details" />
+          </AssociationSet>
+          <AssociationSet Name="FK__order_det__od_fk__47DBAE45" Association="Self.FK__order_det__od_fk__47DBAE45">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="order_details" EntitySet="order_details" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Product_V__av_fk__3B75D760" Association="Self.FK__Product_V__av_fk__3B75D760">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="Product_View" EntitySet="Product_View" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Bids__bid_fk_pro__6477ECF3" Association="db_AuctionModel.FK__Bids__bid_fk_pro__6477ECF3">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="Bid" EntitySet="Bids" />
+          </AssociationSet>
+          <EntitySet Name="Wishlists" EntityType="db_AuctionModel.Wishlist" />
+          <AssociationSet Name="FK__Wishlist__w_fk_c__6FE99F9F" Association="db_AuctionModel.FK__Wishlist__w_fk_c__6FE99F9F">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="Wishlist" EntitySet="Wishlists" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Wishlist__w_fk_p__70DDC3D8" Association="db_AuctionModel.FK__Wishlist__w_fk_p__70DDC3D8">
+            <End Role="Product" EntitySet="Products" />
+            <End Role="Wishlist" EntitySet="Wishlists" />
+          </AssociationSet>
+        </EntityContainer>
+        <Association Name="FK__Bids__bid_fk_pro__6477ECF3">
+          <End Type="db_AuctionModel.Product" Role="Product" Multiplicity="0..1" />
+          <End Type="db_AuctionModel.Bid" Role="Bid" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="p_id" />
+            </Principal>
+            <Dependent Role="Bid">
+              <PropertyRef Name="bid_fk_product" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Wishlist">
+          <Key>
+            <PropertyRef Name="w_id" />
+          </Key>
+          <Property Name="w_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="w_fk_cus_id" Type="Int32" />
+          <Property Name="w_fk_product_id" Type="Int32" />
+          <NavigationProperty Name="Customer" Relationship="db_AuctionModel.FK__Wishlist__w_fk_c__6FE99F9F" FromRole="Wishlist" ToRole="Customer" />
+          <NavigationProperty Name="Product" Relationship="db_AuctionModel.FK__Wishlist__w_fk_p__70DDC3D8" FromRole="Wishlist" ToRole="Product" />
+        </EntityType>
+        <Association Name="FK__Wishlist__w_fk_c__6FE99F9F">
+          <End Type="db_AuctionModel.Customer" Role="Customer" Multiplicity="0..1" />
+          <End Type="db_AuctionModel.Wishlist" Role="Wishlist" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="c_id" />
+            </Principal>
+            <Dependent Role="Wishlist">
+              <PropertyRef Name="w_fk_cus_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Wishlist__w_fk_p__70DDC3D8">
+          <End Type="db_AuctionModel.Product" Role="Product" Multiplicity="0..1" />
+          <End Type="db_AuctionModel.Wishlist" Role="Wishlist" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Product">
+              <PropertyRef Name="p_id" />
+            </Principal>
+            <Dependent Role="Wishlist">
+              <PropertyRef Name="w_fk_product_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="db_AuctionModelStoreContainer" CdmEntityContainer="db_AuctionEntities">
+          <EntitySetMapping Name="Admins">
+            <EntityTypeMapping TypeName="db_AuctionModel.Admin">
+              <MappingFragment StoreEntitySet="Admin">
+                <ScalarProperty Name="ad_id" ColumnName="ad_id" />
+                <ScalarProperty Name="ad_email" ColumnName="ad_email" />
+                <ScalarProperty Name="ad_username" ColumnName="ad_username" />
+                <ScalarProperty Name="ad_password" ColumnName="ad_password" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Bids">
+            <EntityTypeMapping TypeName="db_AuctionModel.Bid">
+              <MappingFragment StoreEntitySet="Bids">
+                <ScalarProperty Name="bid_amount" ColumnName="bid_amount" />
+                <ScalarProperty Name="bid_fk_product" ColumnName="bid_fk_product" />
+                <ScalarProperty Name="bid_id" ColumnName="bid_id" />
+                <ScalarProperty Name="bid_fk_cus" ColumnName="bid_fk_cus" />
+                <ScalarProperty Name="bid_timeStamp" ColumnName="bid_timeStamp" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Carts">
+            <EntityTypeMapping TypeName="db_AuctionModel.Cart">
+              <MappingFragment StoreEntitySet="Cart">
+                <ScalarProperty Name="car_id" ColumnName="car_id" />
+                <ScalarProperty Name="p_id" ColumnName="p_id" />
+                <ScalarProperty Name="cus_id" ColumnName="cus_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Categories">
+            <EntityTypeMapping TypeName="db_AuctionModel.Category">
+              <MappingFragment StoreEntitySet="Category">
+                <ScalarProperty Name="cat_id" ColumnName="cat_id" />
+                <ScalarProperty Name="cat_name" ColumnName="cat_name" />
+                <ScalarProperty Name="cat_image" ColumnName="cat_image" />
+                <ScalarProperty Name="cat_status" ColumnName="cat_status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Contacts">
+            <EntityTypeMapping TypeName="db_AuctionModel.Contact">
+              <MappingFragment StoreEntitySet="Contact">
+                <ScalarProperty Name="cont_id" ColumnName="cont_id" />
+                <ScalarProperty Name="cont_name" ColumnName="cont_name" />
+                <ScalarProperty Name="cont_email" ColumnName="cont_email" />
+                <ScalarProperty Name="cont_message" ColumnName="cont_message" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Customers">
+            <EntityTypeMapping TypeName="db_AuctionModel.Customer">
+              <MappingFragment StoreEntitySet="Customer">
+                <ScalarProperty Name="c_id" ColumnName="c_id" />
+                <ScalarProperty Name="c_firstName" ColumnName="c_firstName" />
+                <ScalarProperty Name="c_lastName" ColumnName="c_lastName" />
+                <ScalarProperty Name="c_age" ColumnName="c_age" />
+                <ScalarProperty Name="c_phone" ColumnName="c_phone" />
+                <ScalarProperty Name="c_gender" ColumnName="c_gender" />
+                <ScalarProperty Name="c_address" ColumnName="c_address" />
+                <ScalarProperty Name="c_image" ColumnName="c_image" />
+                <ScalarProperty Name="c_email" ColumnName="c_email" />
+                <ScalarProperty Name="c_userName" ColumnName="c_userName" />
+                <ScalarProperty Name="c_password" ColumnName="c_password" />
+                <ScalarProperty Name="register_date" ColumnName="register_date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="images">
+            <EntityTypeMapping TypeName="db_AuctionModel.image">
+              <MappingFragment StoreEntitySet="images">
+                <ScalarProperty Name="img_id" ColumnName="img_id" />
+                <ScalarProperty Name="img_text" ColumnName="img_text" />
+                <ScalarProperty Name="img_fk_product_id" ColumnName="img_fk_product_id" />
+                <ScalarProperty Name="img_selected" ColumnName="img_selected" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="orders">
+            <EntityTypeMapping TypeName="db_AuctionModel.order">
+              <MappingFragment StoreEntitySet="order">
+                <ScalarProperty Name="o_id" ColumnName="o_id" />
+                <ScalarProperty Name="o_fk_cus_id" ColumnName="o_fk_cus_id" />
+                <ScalarProperty Name="o_address" ColumnName="o_address" />
+                <ScalarProperty Name="o_phone" ColumnName="o_phone" />
+                <ScalarProperty Name="o_email" ColumnName="o_email" />
+                <ScalarProperty Name="o_zip" ColumnName="o_zip" />
+                <ScalarProperty Name="o_total_amout" ColumnName="o_total_amout" />
+                <ScalarProperty Name="o_status" ColumnName="o_status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="order_details">
+            <EntityTypeMapping TypeName="db_AuctionModel.order_details">
+              <MappingFragment StoreEntitySet="order_details">
+                <ScalarProperty Name="od_id" ColumnName="od_id" />
+                <ScalarProperty Name="od_fk_product_id" ColumnName="od_fk_product_id" />
+                <ScalarProperty Name="od_fk_o" ColumnName="od_fk_o" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Products">
+            <EntityTypeMapping TypeName="db_AuctionModel.Product">
+              <MappingFragment StoreEntitySet="Product">
+                <ScalarProperty Name="p_id" ColumnName="p_id" />
+                <ScalarProperty Name="p_name" ColumnName="p_name" />
+                <ScalarProperty Name="p_price" ColumnName="p_price" />
+                <ScalarProperty Name="p_description" ColumnName="p_description" />
+                <ScalarProperty Name="p_dateOfCreation" ColumnName="p_dateOfCreation" />
+                <ScalarProperty Name="p_status" ColumnName="p_status" />
+                <ScalarProperty Name="p_fk_cat" ColumnName="p_fk_cat" />
+                <ScalarProperty Name="p_start_date" ColumnName="p_start_date" />
+                <ScalarProperty Name="p_end_date" ColumnName="p_end_date" />
+                <ScalarProperty Name="p_increment" ColumnName="p_increment" />
+                <ScalarProperty Name="p_featured_product" ColumnName="p_featured_product" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Product_View">
+            <EntityTypeMapping TypeName="db_AuctionModel.Product_View">
+              <MappingFragment StoreEntitySet="Product_View">
+                <ScalarProperty Name="av_id" ColumnName="av_id" />
+                <ScalarProperty Name="av_fk_product_id" ColumnName="av_fk_product_id" />
+                <ScalarProperty Name="av_veiws_count" ColumnName="av_veiws_count" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Wishlists">
+            <EntityTypeMapping TypeName="db_AuctionModel.Wishlist">
+              <MappingFragment StoreEntitySet="Wishlist">
+                <ScalarProperty Name="w_fk_product_id" ColumnName="w_fk_product_id" />
+                <ScalarProperty Name="w_fk_cus_id" ColumnName="w_fk_cus_id" />
+                <ScalarProperty Name="w_id" ColumnName="w_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

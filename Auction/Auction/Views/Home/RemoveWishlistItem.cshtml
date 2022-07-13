@@ -1,0 +1,116 @@
+﻿@model Auction.ViewModels.CustomerMyBidsViewModel
+@{
+    ViewBag.Title = "RemoveWishlistItem";
+    Layout = null;
+}
+<div class="dash-bid-item dashboard-widget mb-40-60">
+    <div class="header m-0" style="display:block;">
+        <h4 class="title">Wishlist Products</h4>
+        @if (Model.products.Count < 1)
+        {
+            <br />
+            <h6 class="title text-center">No Product Found</h6>
+        }
+    </div>
+</div>
+<div>
+    <div>
+        <div class="row mb-30-none justify-content-center">
+            @if (Model != null && Model.products.Count > 0)
+            {
+                foreach (var product in Model.products)
+                {
+                    <div class="col-sm-10 col-md-6">
+                        <div class="auction-item-2">
+                            <div class="auction-thumb">
+                                <a class="removeWishlist" href="javascript:void(0)" data-id="@product.p_id" style="position: absolute;top: 22px;left: 14px;"><i class="flaticon-cancel"></i></a>
+                                @if (Model != null && Model.images.Count > 0)
+                                {
+                                    foreach (var img in Model.images)
+                                    {
+                                        if (img.img_fk_product_id == product.p_id)
+                                        {
+                                            <a href="@Url.Action("SingleProduct","Home",new { id = product.p_id })"><img src="@Url.Content(img.img_text)" style="width: 100%;height: 210px;object-fit: cover;" alt="img"></a>
+                                        }
+                                    }
+                                }
+                                @if (Session["customer_id"] != null)
+                                {
+                                    <a href="javascript:void(0)" data-id="@product.p_id" class="addToWishlist rating"><i class="far fa-star"></i></a>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("Login","Home",new { ReturnUrl = "/Home/CustomerWishlist/"+product.p_id })" class="rating"><i class="far fa-star"></i></a>
+                                }
+                                <a href="#0" class="bid"><i class="flaticon-auction"></i></a>
+                            </div>
+                            <div class="auction-content">
+                                <h6 class="title">
+                                    <a href="@Url.Action("SingleProduct","Home",new { id = product.p_id })">@product.p_name</a>
+                                </h6>
+                                <div class="bid-area">
+                                    <div class="bid-amount">
+                                        <div class="icon">
+                                            <i class="flaticon-auction"></i>
+                                        </div>
+                                        <div class="amount-content">
+                                            <div class="current">Current Bid</div>
+                                            <div class="amount">Rs @product.Bids.Max(x => x.bid_amount)</div>
+                                        </div>
+                                    </div>
+                                    <div class="bid-amount">
+                                        <div class="icon">
+                                            <i class="flaticon-money"></i>
+                                        </div>
+                                        <div class="amount-content">
+                                            <div class="current">Buy Now</div>
+                                            <div class="amount">Rs. @product.p_price</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="countdown-area">
+                                    <div class="countdown">
+                                        <script>
+                                                    counter("bid_counter@(product.p_id)", "@product.p_end_date");
+                                        </script>
+                                        <div id="bid_counter@(product.p_id)"></div>
+                                    </div>
+                                    <span class="total-bids">@product.Bids.Count Bids</span>
+                                </div>
+                                <div class="text-center">
+                                    <a href="@Url.Action("SingleProduct","Home",new { id = product.p_id })" class="custom-button">Submit a bid</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+<script>
+    
+    $(".removeWishlist").click(function () {
+             $.ajax({
+                 url: '@Url.Action("RemoveWishlistItem", "Home")',
+                 data: {
+                     id : $(this).attr('data-id')
+                 }
+            })
+                 .done(function (response) {
+                     $("#tableContainer").html(response);
+                        $.ajax({
+                            url: '@Url.Action("CountWishlistItem", "Home")',
+                        })
+                        .done(function (response) {
+                            $("#ShowWishlistItemCount").html(response);
+                        })
+                        .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                            alert("FAIL");
+                        });
+                })
+                .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("FAIL");
+                });
+    });
+</script>

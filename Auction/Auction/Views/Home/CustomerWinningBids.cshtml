@@ -1,0 +1,196 @@
+﻿
+@model Auction.ViewModels.CustomerMyBidsViewModel
+@{
+    ViewBag.Title = "Customer Winning Bids";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!--============= Hero Section Starts Here =============-->
+<div class="hero-section style-2">
+    <div class="bg_img hero-bg bottom_center sec-main-banner"></div>
+</div>
+<!--============= Hero Section Ends Here =============-->
+<!--============= Dashboard Section Starts Here =============-->
+<section class="dashboard-section padding-bottom mt--240 mt-lg--440 pos-rel">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-sm-10 col-md-7 col-lg-4">
+                <div class="dashboard-widget mb-30 mb-lg-0 sticky-menu">
+                    <div class="user">
+                        <div class="thumb-area">
+                            <div class="thumb">
+                                <img src="@Url.Content(Model.customer.c_image)" alt="user">
+                            </div>
+                        </div>
+                        <div class="content">
+                            <h5 class="title"><a href="#0">@Model.customer.c_userName</a></h5>
+                            <span class="username"><a href="javascript:void(0)">@Model.customer.c_email</a></span>
+                        </div>
+                    </div>
+                    <ul class="dashboard-menu">
+                        <li>
+                            <a href="@Url.Action("CustomerDashboard","Home")"><i class="flaticon-dashboard"></i>Dashboard</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("CustomerPersonalProfile","Home")"><i class="flaticon-settings"></i>Personal Profile </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("CustomerMyBids","Home")"><i class="flaticon-auction"></i>My Bids</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("CustomerWinningBids","Home")" class="active"><i class="flaticon-best-seller"></i>Winning Bids</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("CustomerWishlist","Home")"><i class="flaticon-star"></i>My Wishlist</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Logout","Home")"><i class="flaticon-right-arrow"></i>Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="dash-bid-item dashboard-widget mb-40-60">
+                    <div class="header m-0" style="display:block;">
+                        <h4 class="title">Winning Bids</h4>
+                        @if (Model.products.Count < 1)
+                        {
+                        <br />
+                            <h6 class="title text-center">No Product Found</h6>
+                        }
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <div class="row mb-30-none justify-content-center">
+                            @if (Model != null && Model.products.Count > 0)
+                            {
+                                foreach (var product in Model.products)
+                                {
+                                    <div class="col-sm-10 col-md-6">
+                                        <div class="auction-item-2">
+                                            <div class="auction-thumb">
+                                                @if (Model != null && Model.images.Count > 0)
+                                                {
+                                                    foreach (var img in Model.images)
+                                                    {
+                                                        if (img.img_fk_product_id == product.p_id)
+                                                        {
+                                                            <a href="@Url.Action("SingleProduct", "Home", new { id = product.p_id })"><img src="@Url.Content(img.img_text)" style="width: 100%;height: 210px;object-fit: cover;" alt="img"></a>
+                                                        }
+                                                    }
+                                                }
+                                                @if (Session["customer_id"] != null)
+                                                {
+                                                    <a href="javascript:void(0)" data-id="@product.p_id" class="addToWishlist rating"><i class="far fa-star"></i></a>
+                                                }
+                                                else
+                                                {
+                                                    <a href="@Url.Action("Login","Home",new { ReturnUrl = "/Home/CustomerWinningBids/"+product.p_id })" class="rating"><i class="far fa-star"></i></a>
+                                                }
+                                                <a href="#0" class="bid"><i class="flaticon-auction"></i></a>
+                                            </div>
+                                            <div class="auction-content">
+                                                <h6 class="title">
+                                                    <a href="@Url.Action("SingleProduct", "Home", new { id = product.p_id })">@product.p_name</a>
+                                                </h6>
+                                                <div class="bid-area">
+                                                    <div class="bid-amount">
+                                                        <div class="icon">
+                                                            <i class="flaticon-auction"></i>
+                                                        </div>
+                                                        <div class="amount-content">
+                                                            <div class="current">Current Bid</div>
+                                                            @if (product.Bids.Count > 0)
+                                                            {
+                                                                <div class="amount">Rs. @product.Bids.Max(x => x.bid_amount)</div>
+                                                            }
+                                                            else
+                                                            {
+                                                                <div class="amount">Rs. 0</div>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                    <div class="bid-amount">
+                                                        <div class="icon">
+                                                            <i class="flaticon-money"></i>
+                                                        </div>
+                                                        <div class="amount-content">
+                                                            <div class="current">Buy Now</div>
+                                                            <div class="amount">Rs. @product.p_price</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="countdown-area">
+                                                    <div class="countdown">
+                                                        <script>
+                                                    counter("bid_counter@(product.p_id)", "@product.p_end_date");
+                                                        </script>
+                                                        <div id="bid_counter@(product.p_id)"></div>
+                                                    </div>
+                                                    <span class="total-bids">@product.Bids.Count Bids</span>
+                                                </div>
+                                                <div class="text-center">
+                                                    <a href="@Url.Action("SingleProduct","Home",new { id = product.p_id })" class="custom-button">Submit a bid</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--============= Dashboard Section Ends Here =============-->
+
+<script>
+       $(".addToWishlist").click(function () {
+            $.ajax({
+                url: '@Url.Action("AddWishlistItem", "Home")',
+                data : {
+                    id : $(this).attr('data-id')
+                }
+            })
+                .done(function (response) {
+                $.ajax({
+                    url: "@Url.Action("CountWishlistItem", "Home")",
+                })
+                    .done(function (response) {
+                        $("#ShowWishlistItemCount").html(response);
+                    })
+                    .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert("FAIL");
+                });
+                var result = JSON.parse(response);
+                if (result.Success) {
+                    if (result.Message == "yes") {
+                        swal({
+                            title: "Product Add To Wishlist",
+                            icon: "success",
+                            button: "OK",
+                        });
+                    }
+                } else if (!result.Success) {
+                    if (result.Message == "no") {
+                        swal({
+                            title: "Product Already Add To Wishlist",
+                            icon: "warning",
+                            button: "OK",
+                        });
+                    }
+                }
+                else if (!result.Success) {
+                    if (result.Message == "error") {
+                        alert("Product Not Add To Cart")
+                    }
+                }
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("FAIL");
+            });
+    });
+</script>

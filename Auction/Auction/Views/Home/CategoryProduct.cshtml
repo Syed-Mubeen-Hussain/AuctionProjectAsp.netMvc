@@ -1,0 +1,296 @@
+﻿@using Auction.ViewModels;
+@model Auction.ViewModels.CategoryProductViewModel
+@{
+    ViewBag.Title = "Shop";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    body > div.product-auction.padding-bottom > div > div.product-header.mb-40 > div:nth-child(1) > div.nice-select.select-bar {
+        width: 211px;
+        text-align: center;
+    }
+
+    body > div.product-auction.padding-bottom > div > div.product-header.mb-40 > div:nth-child(n) > div.nice-select.select-bar.open > ul {
+        max-height: 160px;
+    }
+</style>
+<script>
+    var counter = function (element, end_date) {
+        let endDate = end_date;
+        let myCountDown = new ysCountDown(endDate, function (remaining, finished) {
+            let Showtime = "";
+            if (finished) {
+                if (document.getElementById(element) != null) {
+                    document.getElementById(element).innerHTML = "Time Up";
+                }
+            } else {
+                const re_days = remaining.totalDays;
+                const re_hours = remaining.hours;
+                Showtime += re_days + "d  : ";
+                Showtime += re_hours + "h  : ";
+                Showtime += remaining.minutes + "m  : ";
+                Showtime += remaining.seconds + "s";
+                if (document.getElementById(element) != null) {
+                    document.getElementById(element).innerHTML = Showtime;
+                }
+            }
+        });
+    }
+</script>
+<!--============= Hero Section Starts Here =============-->
+<div class="hero-section style-2">
+    <h1 style="
+    z-index: 9;
+    opacity: 1;
+    font-size: 65px;
+    position: relative;
+    text-align: center;
+    color: yellow!important;">
+        @Model.category.cat_name
+    </h1>
+    <div class="bg_img hero-bg bottom_center sec-main-banner"></div>
+</div>
+<!--============= Hero Section Ends Here =============-->
+<!--============= Featured Auction Section Starts Here =============-->
+@if (Model != null && Model.featuredProducts.Count() > 0)
+{
+    <section class="featured-auction-section padding-bottom mt--240 mt-lg--440 pos-rel">
+        <div class="container">
+            <div class="section-header cl-white mw-100 left-style">
+                <h3 class="title">Bid on These Featured Auctions!</h3>
+            </div>
+            <div class="row justify-content-center mb-30-none">
+                @foreach (var featured_product in Model.featuredProducts)
+                {
+                    <div class="col-sm-10 col-md-6 col-lg-4">
+                        <div class="auction-item-2">
+                            <div class="auction-thumb">
+                                <a href="product-details.html">
+                                    @if (Model.image.Count > 0)
+                                    {
+                                        foreach (var img in Model.image)
+                                        {
+                                            if (img.img_fk_product_id == featured_product.p_id)
+                                            {
+                                                <img style="width: 100%;height: 210px;object-fit: cover;" src="@Url.Content(img.img_text)" alt="image" />
+                                            }
+                                        }
+                                    }
+                                </a>
+                                @if (Session["customer_id"] != null)
+                                {
+                                    <a href="javascript:void(0)" data-id="@featured_product.p_id" class="addToWishlist rating"><i class="far fa-star"></i></a>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("Login","Home",new { ReturnUrl = "/Home/CategoryProduct/"+featured_product.p_fk_cat })" class="rating"><i class="far fa-star"></i></a>
+                                }
+                                <a href="#0" class="bid"><i class="flaticon-auction"></i></a>
+                            </div>
+                            <div class="auction-content">
+                                <h6 class="title">
+                                    <a href="#0">@featured_product.p_name</a>
+                                </h6>
+                                <div class="bid-area">
+                                    <div class="bid-amount">
+                                        <div class="icon">
+                                            <i class="flaticon-auction"></i>
+                                        </div>
+                                        <div class="amount-content">
+                                            <div class="current">Current Bid</div>
+                                            @if (featured_product.Bids.Count > 0)
+                                            {
+                                                <div class="amount">Rs. @featured_product.Bids.Max(x => x.bid_amount)</div>
+                                            }
+                                            else
+                                            {
+                                                <div class="amount">Rs. 0</div>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="bid-amount">
+                                        <div class="icon">
+                                            <i class="flaticon-money"></i>
+                                        </div>
+                                        <div class="amount-content">
+                                            <div class="current" style="text-align:center;">Buy Now</div>
+                                            <div class="amount" style="text-align:center;">Rs @featured_product.p_price</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="countdown-area">
+                                    <div class="countdown">
+                                        <script>
+                                    counter("bid_counter@(featured_product.p_id)", "@featured_product.p_end_date");
+                                        </script>
+                                        <div id="bid_counter@(featured_product.p_id)"></div>
+                                    </div>
+                                    <span class="total-bids">@featured_product.Bids.Count Bids</span>
+                                </div>
+                                <div class="text-center">
+                                    <a href="#0" class="custom-button">Submit a bid</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}
+else
+{
+    <section class="featured-auction-section padding-bottom mt--240 mt-lg--440 pos-rel">
+        <div class="container">
+            <div class="section-header cl-white mw-100 left-style">
+                <h3 class="title" style="padding: 113px 0px;text-align: center;">No Featured Product Found</h3>
+            </div>
+            <div class="row justify-content-center mb-30-none">
+            </div>
+        </div>
+    </section>
+}
+<!--============= Featured Auction Section Ends Here =============-->
+<!--============= Product Auction Section Starts Here =============-->
+
+@if (Model != null && Model.products.Count() > 0)
+{
+    <div class="product-auction padding-bottom">
+        <div class="container">
+            <div class="product-header mb-40">
+                <div class="product-header-item">
+                    <div class="item">Sort By : </div>
+                    <select id="SortBy" class="select-bar">
+                        <option value="1">Newest Product</option>
+                        <option value="2">Price High to Low</option>
+                        <option value="3">Price Low to High</option>
+                        <option value="4">Oldest Product</option>
+                    </select>
+                </div>
+                @*<div class="product-header-item">
+                        <div class="item">Show : </div>
+                        <select id="showProduct" class="select-bar">
+                            <option value="6">06</option>
+                            <option value="12">12</option>
+                            <option value="18">18</option>
+                            <option value="24">24</option>
+                        </select>
+                    </div>*@
+                <div class="product-search ml-auto">
+                    <input type="text" value="@Model.search" id="searchTxt" placeholder="Product Name">
+                    <button id="searchBtn" type="button"><i class="fas fa-search"></i></button>
+                </div>
+
+                <div class="px-3">
+                    <a style="
+                    padding: 2px 18px;
+                    border: 1px solid #b59ce4;
+                    border-radius: 30px;
+                    color: #171d1c;
+                    line-height: 30px;" href="@Url.Action("CategoryProduct","Home", new { id = Model.categoryId })" class="normal-button">Reset</a>
+                </div>
+            </div>
+            <div id="tableContainer">
+                @{
+                    CategoryProductViewModel categoryProductViewModel = new CategoryProductViewModel();
+                    categoryProductViewModel.products = Model.products;
+                    categoryProductViewModel.sortBy = Model.sortBy;
+                    categoryProductViewModel.search = Model.search;
+                    categoryProductViewModel.image = Model.image;
+                    categoryProductViewModel.categoryId = Model.categoryId;
+                    Html.RenderPartial("CategoryFilterProduct", categoryProductViewModel);
+                }
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    $("#SortBy").change(function () {
+        debugger;
+        $("#tableContainer").css('opacity', '0.5');
+        $.ajax({
+            url: '@Url.Action("CategoryFilterProduct", "Home")',
+            data: {
+                id: @Model.categoryId,
+                sortBy: $(this).val(),
+                search: $("#searchTxt").val(),
+            }
+        })
+            .done(function (response) {
+                $("#tableContainer").html(response);
+                $("#tableContainer").css('opacity', '1');
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("FAIL");
+            });
+
+    });
+
+    $("#searchBtn").click(function () {
+            $("#tableContainer").css('opacity', '0.5');
+        $.ajax({
+            url: '@Url.Action("CategoryFilterProduct", "Home")',
+            data: {
+                id: @Model.categoryId,
+                search: $("#searchTxt").val(),
+                sortBy: $("#SortBy").val(),
+            }
+        })
+            .done(function (response) {
+                $("#tableContainer").html(response);
+                $("#tableContainer").css('opacity', '1');
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("FAIL");
+            });
+    });
+      $(".addToWishlist").click(function () {
+            $.ajax({
+                url: '@Url.Action("AddWishlistItem", "Home")',
+                data : {
+                    id : $(this).attr('data-id')
+                }
+            })
+                .done(function (response) {
+                $.ajax({
+                    url: "@Url.Action("CountWishlistItem", "Home")",
+                })
+                .done(function (response) {
+                    $("#ShowWishlistItemCount").html(response);
+                })
+                .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("FAIL");
+                 });
+                var result = JSON.parse(response);
+                if (result.Success) {
+                    if (result.Message == "yes") {
+                        swal({
+                            title: "Product Add To Wishlist",
+                            icon: "success",
+                            button: "OK",
+                        });
+                    }
+                } else if (!result.Success) {
+                    if (result.Message == "no") {
+                        swal({
+                            title: "Product Already Add To Wishlist",
+                            icon: "warning",
+                            button: "OK",
+                        });
+                    }
+                }
+                else if (!result.Success) {
+                    if (result.Message == "error") {
+                        alert("Product Not Add To Cart")
+                    }
+                }
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("FAIL");
+            });
+    });
+</script>
+
+
+<!--============= Product Auction Section Ends Here =============-->

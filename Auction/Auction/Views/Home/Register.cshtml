@@ -1,0 +1,283 @@
+﻿
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .error {
+        color: red;
+    }
+</style>
+<!--============= Hero Section Starts Here =============-->
+<div class="hero-section">
+    <div class="bg_img hero-bg bottom_center sec-main-banner"></div>
+</div>
+<!--============= Hero Section Ends Here =============-->
+<!--============= Account Section Starts Here =============-->
+@Html.Raw(ViewData["msg"])
+@Html.Raw(ViewData["ExtensionError"])
+<section class="account-section padding-bottom">
+    <div class="container">
+        <div class="account-wrapper mt--100 mt-lg--440">
+            <div class="left-side">
+                <div class="section-header">
+                    <h2 class="title">Sign Up</h2>
+                </div>
+                <form class="login-form" id="formData" action="@Url.Action("Register","Home")" method="post" enctype="multipart/form-data">
+                    <div class="form-group mb-0">
+                        <label for="login-c_email"><i class="fa fa-align-justify"></i></label>
+                        <input type="text" id="c_firstName" name="c_firstName" placeholder="First Name">
+                    </div>
+                    <label id="c_firstName-error" class="error" for="c_firstName"></label>
+                    <span>&nbsp;</span>
+
+                    <div class="form-group mb-0 ">
+                        <label for="login-c_email"><i class="fa fa-align-justify"></i></label>
+                        <input type="text" id="c_lastName" name="c_lastName" placeholder="Last Name">
+                    </div>
+                    <label id="c_lastName-error" class="error" for="c_lastName"></label>
+                    <span>&nbsp;</span>
+
+                    <div class="form-group mb-0">
+                        <label for="login-c_email"><i class="fas fa-birthday-cake"></i></label>
+                        <input type="number" min="1" id="c_age" name="c_age" placeholder="Age">
+                    </div>
+                    <label id="c_age-error" class="error" for="c_age"></label>
+                    <span>&nbsp;</span>
+
+                    <div class="form-radio" style="display:flex;align-items:center;">
+                        <label for="gender" class="radio-label" style="padding-right:30px;">Gender :</label>
+                        <div class="form-radio-item" style="margin-right:25px;">
+                            <input type="radio" name="c_gender" value="Male" class="gender" id="male" checked>
+                            <label for="male">Male</label>
+                            <span class="check"></span>
+                        </div>
+                        <div class="form-radio-item">
+                            <input type="radio" name="c_gender" value="Female" class="gender" id="female">
+                            <label for="female">Female</label>
+                            <span class="check"></span>
+                        </div>
+                    </div>
+                    <div class="form-group mb-0">
+                        <label for="login-c_email"><i class="fas fa-address-book"></i></label>
+                        <input type="text" placeholder="Address" name="c_address" id="c_address" style="resize:vertical;" />
+                    </div>
+                    <label id="c_address-error" class="error" for="c_address"></label>
+                    <span>&nbsp;</span>
+
+                    <div class="form-group mb-0">
+                        <label for="login-c_email"><i class="fas fa-phone"></i></label>
+                        <input type="number" min="0" id="c_phone" name="c_phone" placeholder="Phone Number">
+                    </div>
+                    <label id="c_phone-error" class="error" for="c_phone"></label>
+                    <span>&nbsp;</span>
+
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" style="background: white;padding-left: 26px;" id="inputGroupFileAddon01">
+                                <i class="fa fa-upload" aria-hidden="true"></i>
+                            </span>
+                        </div>
+                        <div class="custom-file mb-30">
+                            <input type="file" id="c_image" name="imageFile" style="position: relative;z-index: 8;width: 100%;height: calc(1.5em + 0.75rem + 8.5px);margin-top: 6px;opacity: 1;display: flex;justify-content: center;align-items: center;padding-top: 7px;background: white;border: 1px solid rgba(97, 90, 191, 0.2);border-left: 0px;border-radius: 0px;" class="custom-file-input" accept=".png, .jpg" />
+                        </div>
+                    </div>
+                    <label id="c_image-error" class="error" for="c_image"></label>
+                    <span id="c_image_upload_Error" class="error"></span>
+                    <span>&nbsp;</span>
+
+                    <div class="form-group mb-0">
+                        <label for="login-c_email"><i class="far fa-envelope"></i></label>
+                        <input type="text" id="c_email" name="c_email" placeholder="Email">
+                    </div>
+                    <label id="c_email-error" class="error" for="c_email"></label>
+                    <span>&nbsp;</span>
+
+                    <div class="form-group mb-0">
+                        <label for="login-c_email"><i class="fa fa-user icon"></i></label>
+                        <input type="text" onkeyup="Check_username()" id="c_username" name="c_username" placeholder="Username">
+                    </div>
+                    <label id="c_username-error" class="error" for="c_username"></label>
+                    <span id="check_username_error" class="error"></span>
+
+                    <span>&nbsp;</span>
+
+                    <div class="form-group mb-0">
+                        <label for="login-pass"><i class="fas fa-lock"></i></label>
+                        <input type="password" id="c_password" name="c_password" placeholder="Password">
+                    </div>
+                    <label id="c_password-error" class="error" for="c_password"></label>
+                    <span>&nbsp;</span>
+
+                    <div class="form-group mb-0">
+                        <button type="button" id="registerBtn" class="custom-button">Register</button>
+                    </div>
+                </form>
+            </div>
+            <div class="right-side cl-white">
+                <div class="section-header mb-0">
+                    <h3 class="title mt-0">ALREADY HAVE AN ACCOUNT?</h3>
+                    <a href="@Url.Action("Login","Home")" class="custom-button transparent">Sign In</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    function Check_username() {
+        $("#check_username_error").html("");
+        if (document.getElementById("c_username").value.trim()) {
+            var username = document.getElementById("c_username").value;
+        $.ajax({
+                url: '@Url.Action("CheckUsername", "Home")',
+                data: {
+                    username: username
+                }
+            })
+            .done(function (response) {
+                if (response == 1) {
+                    $("#check_username_error").html("That username is taken. Try another.");
+                }
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("FAIL");
+                });
+        }
+    }
+
+    $('INPUT[type="file"]').change(function () {
+        $("#c_image_upload_Error").html("");
+
+        var fileInput = document.getElementById('c_image');
+        var filePath = fileInput.value;
+        var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/;
+        if (!allowedExtensions.exec(filePath.toLowerCase())) {
+            $("#c_image_upload_Error").html('Image format not supported.');
+        } 
+       });
+    $('#formData').validate({
+        rules: {
+            c_firstName: {
+                required: true,
+                minlength:3,
+                maxlength: 20,
+                normalizer: function (value) {
+                    return $.trim(value);
+                }
+            },
+            c_lastName: {
+                required: true,
+                minlength: 3,
+                maxlength: 20,
+                normalizer: function (value) {
+                    return $.trim(value);
+                }
+            },
+            c_age: {
+                required: true,
+                min: 1,
+                normalizer: function (value) {
+                    return $.trim(value);
+                }
+            },
+            c_address: {
+                required: true,
+                minlength: 5,
+                normalizer: function (value) {
+                    return $.trim(value);
+                }
+            },
+            c_phone: {
+                required: true,
+                minlength: 11,
+                maxlength: 11,
+                normalizer: function (value) {
+                    return $.trim(value);
+                }
+            },
+            c_image: {
+                required: true,
+                normalizer: function (value) {
+                    return $.trim(value);
+                }
+            },
+            c_email: {
+                required: true,
+                maxlength: 50,
+                normalizer: function (value) {
+                    return $.trim(value);
+                }
+            },
+            c_username: {
+                required: true,
+                maxlength: 20,
+                normalizer: function (value) {
+                    return $.trim(value);
+                }
+            },
+            c_password: {
+                required: true,
+                maxlength: 20,
+                normalizer: function (value) {
+                    return $.trim(value);
+                }
+            },
+        },
+        messages: {
+            c_firstName: {
+                required: "First name is required",
+                minlength: "Minimum 3 Characters",
+                maxlength: "Maximum 20 Characters"
+            },
+            c_lastName: {
+                required: "Last name is required",
+                minlength: "Minimum 3 Characters",
+                maxlength: "Maximum 20 Characters"
+            },
+            c_age: {
+                required: "Age is required",
+                min: "Minimum Age is 1"
+            },
+            c_address: {
+                required: "Address is required",
+                minlength: "Minimum 5 Characters"
+            },
+            c_phone: {
+                required: "Phone number is required",
+                minlength: "Phone number minimum 11 digits",
+                maxlength: "Phone number maximum 11 digits",
+            },
+            c_image: {
+                required: "Image is required",
+            },
+            c_email: {
+                required: "Email is required",
+                maxlength: "Maximum 50 Characters"
+            },
+            c_username: {
+                required: "Username is required",
+                maxlength: "Maximum 20 Characters"
+            },
+            c_password: {
+                required: "Password is required",
+                maxlength: "Maximum 20 Characters"
+            },
+        }
+    });
+
+    $("#registerBtn").click(function () {
+        if ($("#formData").valid()) {
+            var fup = document.getElementById('c_image');
+            var fileName = fup.value;
+            var ext = fileName.substring(fileName.lastIndexOf('.') + 1);
+            if (ext == "png" || ext == "jpg" || ext == "jpeg") {
+                if (document.getElementById("check_username_error").innerHTML.trim() == "") {
+                    $("#formData").submit();
+                }
+            } else {
+                alert("Please select jpg, jpeg and png format c_image");
+            }
+
+        }
+    });
+</script>

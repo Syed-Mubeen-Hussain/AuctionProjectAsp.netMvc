@@ -1,0 +1,126 @@
+﻿
+@{
+    ViewBag.Title = "ContactUs";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .error{
+        color:red;
+    }
+</style>
+<!--============= Hero Section Starts Here =============-->
+<div class="hero-section">
+    <div class="bg_img hero-bg bottom_center sec-main-banner"></div>
+</div>
+<!--============= Hero Section Ends Here =============-->
+<!--============= Contact Section Starts Here =============-->
+<section class="contact-section padding-bottom">
+    <div class="container">
+        <div class="contact-wrapper padding-top padding-bottom mt--100 mt-lg--440">
+            <div class="section-header">
+                <h5 class="cate">Contact Us</h5>
+                <h2 class="title">get in touch</h2>
+                <p>We'd love to hear from you! Let us know how we can help.</p>
+            </div>
+            <div class="row">
+                <div class="col-xl-8 col-lg-7">
+                    <form class="contact-form" id="formData">
+                        <div class="form-group mt-2 mb-0">
+                            <label for="name"><i class="far fa-user"></i></label>
+                            <input type="text" onkeyup="name_field()" placeholder="Enter Your Name" name="cont_name" id="name">
+                        </div>
+                        <label id="name-error" class="error" for="name" style="margin-bottom: 5px;">&nbsp;</label>
+                        <div class="form-group mt-2 mb-0">
+                            <label for="name"><i class="fas fa-envelope-open-text"></i></label>
+                            <input type="text" onkeyup="email_field()" placeholder="Enter Your Email ID" name="cont_email" id="email">
+                        </div>
+                        <label id="email-error" class="error" for="email" style="margin-bottom: 40px;">&nbsp;</label>
+                        <div class="form-group mt-2 mb-0">
+                            <label for="message" class="message"><i class="far fa-envelope"></i></label>
+                            <textarea name="cont_message" onkeyup="message_field()" id="message" placeholder="Type Your Message"></textarea>
+                        </div>
+                        <label id="message-error" class="error" for="message" style="margin-bottom: 5px;">&nbsp;</label>
+                        <div class="form-group text-center mb-0">
+                            <button type="button" id="submitBtn" class="custom-button">Send Message</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-xl-4 col-lg-5 d-lg-block d-none">
+                    <img src="~/Content/images/images-contact.png" class="w-100" alt="images">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--============= Contact Section Ends Here =============-->
+<script> 
+    function name_field() {
+        if ($("#name").val().trim() == "") {
+            $("#name-error").html("Name is required");
+        } else {
+            $("#name-error").html("&nbsp;");
+        }
+    }
+    function email_field() {
+        if ($("#email").val().trim() == "") {
+            $("#email-error").html("Email is required");
+        } else {
+            var pattern = /^\w+([\.-]?\w+)*@@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+            if (!pattern.test($("#email").val())) {
+                $("#email-error").html("Email not valid");
+            } else {
+                $("#email-error").html("&nbsp;");
+            }   
+        }
+    }
+    function message_field() {
+        if ($("#message").val().trim() == "") {
+            $("#message-error").html("Message is required");
+        } else {
+            $("#message-error").html("&nbsp;");
+        }
+    }
+    $("#submitBtn").click(function () {
+        if ($("#name").val().trim() == "") {
+            $("#name-error").html("Name is required");
+        }
+        if ($("#email").val().trim() == "") {
+            $("#email-error").html("Email is required");
+        }
+        if ($("#message").val().trim() == "") {
+            $("#message-error").html("Message is required");
+        }
+
+        if ($("#name").val().trim() != "" && $("#email").val().trim() != "" && $("#message").val().trim() != "" && /^\w+([\.-]?\w+)*@@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test($("#email").val()) == true) {
+            $.ajax({
+                url: '@Url.Action("ContactUs", "Home")',
+                type: 'post',
+                data: $("#formData").serialize()
+            })
+                .done(function (response) {
+                    var result = JSON.parse(response);
+                    if (result.Success == true) {
+
+                        swal({
+                            title: "Thank You!",
+                            text: "Form Has Been Submitted!",
+                            icon: "success",
+                            button: true,
+                        })
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                window.location.href = "@Url.Action("Index","Home")";
+                                } 
+                            });
+                    } else {
+                        alert("Something went wrong try again");
+                    }
+                })
+                .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("FAIL");
+                });
+        }
+    });
+
+
+</script>

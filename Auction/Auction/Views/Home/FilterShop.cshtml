@@ -1,0 +1,130 @@
+﻿@model Auction.ViewModels.FilterShopViewModel
+@{
+    ViewBag.Title = "FilterShop";
+    Layout = null;
+}
+<div class="row mb-30-none justify-content-center">
+    @if (Model != null && Model.products.Count > 0)
+    {
+        foreach (var product in Model.products)
+        {
+            <div class="col-sm-10 col-md-6 col-lg-4">
+                <div class="auction-item-2">
+                    <div class="auction-thumb">
+                        <a href="@Url.Action("SingleProduct","Home",new { id = product.p_id })">
+                            @if (Model.image.Count > 0)
+                            {
+                                foreach (var img in Model.image)
+                                {
+                                    if (img.img_fk_product_id == product.p_id)
+                                    {
+                                        <img style="width: 100%;height: 210px;object-fit: cover;" src="@Url.Content(img.img_text)" alt="image" />
+                                    }
+                                }
+                            }
+                        </a>
+                        @if (Session["customer_id"] != null)
+                        {
+                            <a href="javascript:void(0)" data-id="@product.p_id" class="addToWishlist rating"><i class="far fa-star"></i></a>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Login","Home",new { ReturnUrl = "/Home/Shop" })" class="rating"><i class="far fa-star"></i></a>
+                        }
+
+                        <a href="@Url.Action("SingleProduct","Home",new { id = product.p_id })" class="bid"><i class="flaticon-auction"></i></a>
+                    </div>
+                    <div class="auction-content">
+                        <h6 class="title">
+                            <a href="@Url.Action("SingleProduct","Home",new { id = product.p_id })">@product.p_name</a>
+                        </h6>
+                        <div class="bid-area">
+                            <div class="bid-amount">
+                                <div class="icon">
+                                    <i class="flaticon-auction"></i>
+                                </div>
+                                <div class="amount-content">
+                                    <div class="current">Current Bid</div>
+                                    @if (product.Bids.Count > 0)
+                                    {
+                                        <div class="amount">Rs. @product.Bids.Max(x => x.bid_amount)</div>
+                                    }
+                                    else
+                                    {
+                                        <div class="amount">Rs. 0</div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="bid-amount">
+                                <div class="icon">
+                                    <i class="flaticon-money"></i>
+                                </div>
+                                <div class="amount-content">
+                                    <div class="current">Buy Now</div>
+                                    <div class="amount" style="width:102px;">Rs. @product.p_price</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="countdown-area">
+                            <div class="countdown">
+                                <script>
+                                    counter("bid_counter@(product.p_id)", "@product.p_end_date");
+                                </script>
+                                <div id="bid_counter@(product.p_id)"></div>
+                            </div>
+                            <span class="total-bids">@product.Bids.Count Bids</span>
+                        </div>
+                        <div class="text-center">
+                            <a href="@Url.Action("SingleProduct","Home",new { id = product.p_id })" class="custom-button">Submit a bid</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        }
+    }
+    else
+    {
+        <span>No Products Found</span>
+    }
+    @if (Convert.ToInt32(Session["loadMore"]) > Model.products.Count())
+    {
+
+    }
+    else
+    {
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12" style="padding: 50px 0px;text-align: center;">
+                    <button style="width:200px;" id="loadMoreBtn" class="normal-button">Load More</button>
+                </div>
+            </div>
+        </div>
+    }
+
+    <input type="hidden" id="Search" value="@Model.search" />
+    <input type="hidden" id="SortBy" value="@Model.sortBy" />
+</div>
+
+<script>
+    $("#loadMoreBtn").click(function () {
+        $("#tableContainer").css('opacity', '0.5');
+        $.ajax({
+            url: '@Url.Action("FilterShop","Home")',
+            data: {
+                search: $("#searchTxt").val(),
+                sortBy: "@Model.sortBy",
+                loadMore: "yes"
+            }   
+        })
+            .done(function (response) {
+                $("#tableContainer").html(response);
+                $("#tableContainer").css('opacity', '1');
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("FAIL");
+            });
+
+   });
+   
+</script>

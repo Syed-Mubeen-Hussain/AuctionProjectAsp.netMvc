@@ -1,0 +1,130 @@
+﻿@model Auction.ViewModels.CheckoutViewModel
+@{
+    ViewBag.Title = "Checkout";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--============= Hero Section Starts Here =============-->
+<div class="hero-section">
+    <div class="bg_img hero-bg bottom_center sec-main-banner"></div>
+</div>
+<!--============= Hero Section Ends Here =============-->
+<!--============= Contact Section Starts Here =============-->
+<section class="contact-section padding-bottom">
+    <div class="container">
+        <div style="padding-top:42px;padding-left:0px;" class="contact-wrapper section-checkout padding-top padding-bottom mt--100 mt-lg--440">
+            <div class="section-header" style="margin-bottom: 38px;">
+                <h2 class="title">checkout</h2>
+            </div>
+            <div class="row justify-content-around">
+                <div class="col-12 col-sm-12 col-md-12 col-lg-9 col-xl-9 col-xxl-9">
+                    <div class="row" style="margin-bottom:15px;">
+                        <div class="col-md-6 col-lg-6">
+                            <h5 class="mb-3 text-center" style="font-size: 22px;font-weight: bold;">CUSTOMER INFO</h5>
+                        </div>
+                        <div class="col-md-6 col-lg-6">
+                            <h5 class="mb-3 text-center" style="font-size: 22px;font-weight: bold;">YOUR PRODUCT</h5>
+                        </div>
+                    </div>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-6 col-lg-6">
+                                <div>
+                                    <label for="" style="font-size: 15px;" class="custom-label">Username</label>
+                                    <input type="text" value="@Model.customer.c_userName" style="padding: 10px;font-size: 16px;" class="form-control custom-control mb-2" placeholder="">
+                                </div>
+                                <div>
+                                    <label for="" style="font-size: 15px;" class="custom-label">Address</label>
+                                    <input type="text" id="o_address" value="@Model.customer.c_address" style="padding: 10px;font-size: 16px;" class="form-control custom-control mb-2" placeholder="">
+                                </div>
+
+                                <div>
+                                    <label for="" style="font-size: 15px;" class="custom-label">Email</label>
+                                    <input type="text" id="o_email" value="@Model.customer.c_email" style="padding: 10px;font-size: 16px;" class="form-control custom-control mb-2" placeholder="">
+                                </div>
+
+                                <div>
+                                    <label for="" style="font-size: 15px;" class="custom-label">Phone</label>
+                                    <input type="text" id="o_phone" value="@Model.customer.c_phone" style="padding: 10px;font-size: 16px;" class="form-control custom-control mb-2" placeholder="">
+                                </div>
+
+                                <div>
+                                    <label for="" style="font-size: 15px;" class="custom-label">Zip Code</label>
+                                    <input type="text" id="o_zip" value="12345" style="padding: 10px;font-size: 16px;" class="form-control custom-control mb-2">
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6">
+                                <div>
+                                    <div style="display: flex;justify-content: space-between;font-size:17px;font-weight: bold;">
+                                        <span>Product</span>
+                                        <span>Total</span>
+                                    </div>
+                                    @{
+                                        long totalAmount = 0;
+                                    }
+                                    @if (Model != null && Model.products.Count > 0)
+                                    {
+                                        int sno = 1;
+                                        foreach (var product in Model.products)
+                                        {
+                                            <div style="display: flex;justify-content: space-between;margin: 8px 0px;">
+                                                <span>@(sno++). @product.p_name</span>
+                                                <span>Rs. @product.p_price</span>
+                                                <input type="hidden" value="@(totalAmount += product.p_price)" />
+                                            </div>
+                                        }
+                                    }
+                                    <hr />
+                                    <div style="display: flex;justify-content: space-between;font-size: 17px;font-weight: bold;color: blue;margin-bottom: 15px;">
+                                        <span>Total</span>
+                                        <span>Rs. @totalAmount</span>
+                                        <input type="hidden" id="o_total_amout" value="@totalAmount" />
+                                    </div>
+                                    <div style="display: flex;justify-content: center;align-items: center;">
+                                        <a href="javascript:" class="custom-button mt-2" id="placeOrder">Place order</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--============= Contact Section Ends Here =============-->
+<script>
+    $("#placeOrder").click(function () {
+        var sendData = { o_address: $("#o_address").val(), o_phone: $("#o_phone").val(), o_email: $("#o_email").val(), o_zip: $("#o_zip").val(), o_total_amout: $("#o_total_amout").val() };
+        $.ajax({
+        url: "@Url.Action("Checkout","Home")",
+        type: 'post',
+        data: sendData
+    })
+        .done(function (response) {
+           var result = JSON.parse(response);
+            if (result.Success) {
+                swal({
+                    title: "Your Order Has Been Submitted!",
+                    text: "Thank You For Shopping",
+                    icon: "success",
+                    button: true,
+                })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        window.location.href = "@Url.Action("Index","Home")";
+                    } else {
+                           window.location.href = "@Url.Action("Index","Home")";
+                    }
+                });
+                }
+                else if (result.Success == false && result.Message == "no"){
+                    window.location.href = "@Url.Action("Index","Home")";
+                } else {
+                    alert("Something went wrong try again");
+                }
+        })
+        .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+            alert("FAIL");
+        });
+    });
+</script>

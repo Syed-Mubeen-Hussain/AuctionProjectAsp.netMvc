@@ -1,0 +1,904 @@
+﻿@model Auction.ViewModels.HomePageViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<!--============= Cart Section Ends Here =============-->
+<!--============= Banner Section Starts Here =============-->
+<section class="banner-section home-1-sec bg_img">
+    <div class="container">
+        <div class="row align-items-center justify-content-between">
+            <div class="col-lg-6 col-xl-6">
+                <div class="banner-content cl-white">
+                    <h5 class="cate">Next Generation Auction</h5>
+                    <h1 class="title"><span class="d-xl-block">Find Your</span> Next Deal!</h1>
+                    <p>
+                        Online Auction is where everyone goes to shop, sell,and give, while discovering variety and affordability.
+                    </p>
+                    <a href="@Url.Action("Shop", "Home")" class="custom-button yellow btn-large">Get Started</a>
+                </div>
+            </div>
+            <div class="d-none d-lg-block col-lg-6">
+                <div class="banner-thumb-2">
+                    <img src="~/Content/images/banner-banner-1.png" alt="banner">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="banner-shape d-none d-lg-block">
+        <img src="~/Content/images/img-banner-shape.png" alt="css">
+    </div>
+</section>
+<!--============= Banner Section Ends Here =============-->
+
+@if (Model != null && Model.categories.Count > 0)
+{
+    <div class="browse-section ash-bg">
+        <!--============= Hightlight Slider Section Starts Here =============-->
+        <div class="browse-slider-section mt--140">
+            <div class="container">
+                <div class="section-header-2 cl-white mb-4">
+                    <div class="left">
+                        <h6 class="title pl-0 w-100">Categories</h6>
+                    </div>
+                    <div class="slider-nav">
+                        <a href="#0" class="bro-prev"><i class="flaticon-left-arrow"></i></a>
+                        <a href="#0" class="bro-next active"><i class="flaticon-right-arrow"></i></a>
+                    </div>
+                </div>
+                <div class="m--15">
+                    <div class="browse-slider owl-theme owl-carousel">
+                        @if (Model != null && Model.categories.Count > 0)
+                        {
+                            foreach (var category in Model.categories)
+                            {
+                                <a href="@Url.Action("CategoryProduct", "Home", new { id = category.cat_id })" class="browse-item">
+                                    <img src="@Url.Content(category.cat_image)" alt="auction">
+                                    <span class="info">@category.cat_name</span>
+                                </a>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--============= Hightlight Slider Section Ends Here =============-->
+        <!--============= Car Auction Section Starts Here =============-->
+        @{
+            var vehicles = Model.categories[0];
+            var Jewelry = Model.categories[1];
+            var watches = Model.categories[2];
+            var sports = Model.categories[3];
+            var electronics = Model.categories[4];
+            var realState = Model.categories[5];
+        }
+        @if (Model != null && Model.categories.Count > 0)
+        {
+            int count = 0;
+            if (vehicles != null && vehicles.Products.Where(x => x.p_featured_product != 1 && x.p_status == 1).Count() > 0)
+            {
+                <section class="car-auction-section padding-bottom padding-top pos-rel oh">
+                    <div class="car-bg"><img src="~/Content/images/car-car-bg.png" alt="car"></div>
+                    <div class="container">
+                        <div class="section-header-3">
+                            <div class="left">
+                                <div class="thumb">
+                                    <img src="@vehicles.cat_image" alt="header-icons">
+                                </div>
+                                <div class="title-area">
+                                    <h2 class="title">@vehicles.cat_name</h2>
+                                </div>
+                            </div>
+                            <a href="@Url.Action("CategoryProduct","Home", new { id = vehicles.cat_id })" class="normal-button">View All</a>
+                        </div>
+                        <div class="row justify-content-center mb-30-none">
+                            @foreach (var product in Model.products.Where(x => x.p_featured_product != 1))
+                            {
+                                if (product.p_fk_cat == vehicles.cat_id && count < 3)
+                                {
+                                    <div class="col-sm-10 col-md-6 col-lg-4">
+                                        <div class="auction-item-2">
+                                            <div class="auction-thumb">
+                                                @if (Model != null && Model.images.Count > 0)
+                                                {
+                                                    foreach (var img in Model.images)
+                                                    {
+                                                        if (img.img_fk_product_id == product.p_id)
+                                                        {
+                                                            <a href="@Url.Action("SingleProduct","Home",new { id = product.p_id })"><img src="@Url.Content(img.img_text)" style="width: 100%;height: 210px;object-fit: cover;" alt="img"></a>
+                                                        }
+                                                    }
+                                                }
+                                                @if (Session["customer_id"] != null)
+                                                {
+                                                    <a href="javascript:void(0)" data-id="@product.p_id" class="addToWishlist rating"><i class="far fa-star"></i></a>
+                                                }
+                                                else
+                                                {
+                                                    <a href="@Url.Action("Login","Home",new { ReturnUrl = "/Home" })" class="rating"><i class="far fa-star"></i></a>
+                                                }
+                                                <a href="@Url.Action("SingleProduct","Home",new { id = product.p_id })" class="bid"><i class="flaticon-auction"></i></a>
+                                            </div>
+                                            <div class="auction-content">
+                                                <h6 class="title">
+                                                    <a href="@Url.Action("SingleProduct","Home",new { id = product.p_id })">@product.p_name</a>
+                                                </h6>
+                                                <div class="bid-area">
+                                                    <div class="bid-amount">
+                                                        <div class="icon">
+                                                            <i class="flaticon-auction"></i>
+                                                        </div>
+                                                        <div class="amount-content">
+                                                            <div class="current">Current Bid</div>
+                                                            @if (product.Bids.Count > 0)
+                                                            {
+                                                                <div class="amount">Rs. @product.Bids.Max(x => x.bid_amount)</div>
+                                                            }
+                                                            else
+                                                            {
+                                                                <div class="amount">Rs. 0</div>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                    <div class="bid-amount">
+                                                        <div class="icon">
+                                                            <i class="flaticon-money"></i>
+                                                        </div>
+                                                        <div class="amount-content">
+                                                            <div class="current">Buy Now</div>
+                                                            <div class="amount">Rs @product.p_price</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="countdown-area">
+                                                    <div class="countdown">
+                                                        <script>
+                                                    counter("bid_counter@(product.p_id)", "@product.p_end_date");
+                                                        </script>
+                                                        <div id="bid_counter@(product.p_id)"></div>
+                                                    </div>
+                                                    <span class="total-bids">@product.Bids.Count Bids</span>
+                                                </div>
+                                                <div class="text-center">
+                                                    <a href="@Url.Action("SingleProduct","Home",new { id = product.p_id })" class="custom-button">Submit a bid</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    count++;
+                                }
+                            }
+                        </div>
+                    </div>
+                </section>
+            }
+        }
+        <!--============= Car Auction Section Ends Here =============-->
+    </div>
+
+
+    <!--============= Jewelry Auction Section Starts Here =============-->
+    if (Model != null && Model.categories.Count > 0)
+    {
+        int count = 0;
+        if (Jewelry != null && Jewelry.Products.Where(x => x.p_featured_product != 1 && x.p_status == 1).Count() > 0)
+        {
+            <section class="car-auction-section padding-bottom padding-top pos-rel oh">
+                <div class="car-bg"><img src="~/Content/images/jewelry-jwelry-bg.png" alt="car"></div>
+                <div class="container">
+                    <div class="section-header-3">
+                        <div class="left">
+                            <div class="thumb">
+                                <img src="@Jewelry.cat_image" alt="header-icons">
+                            </div>
+                            <div class="title-area">
+                                <h2 class="title">@Jewelry.cat_name</h2>
+                            </div>
+                        </div>
+                        <a href="@Url.Action("CategoryProduct","Home", new { id = Jewelry.cat_id })" class="normal-button">View All</a>
+                    </div>
+                    <div class="row justify-content-center mb-30-none">
+
+                        @foreach (var product in Model.products.Where(x => x.p_featured_product != 1))
+                        {
+                            if (product.p_fk_cat == Jewelry.cat_id && count < 3)
+                            {
+                                <div class="col-sm-10 col-md-6 col-lg-4">
+                                    <div class="auction-item-2">
+                                        <div class="auction-thumb">
+                                            @if (Model != null && Model.images.Count > 0)
+                                            {
+                                                foreach (var img in Model.images)
+                                                {
+                                                    if (img.img_fk_product_id == product.p_id)
+                                                    {
+                                                        <a href="@Url.Action("SingleProduct","Home",new { id = product.p_id })"><img src="@Url.Content(img.img_text)" style="width: 100%;height: 210px;object-fit: cover;" alt="img"></a>
+                                                    }
+                                                }
+                                            }
+                                            @if (Session["customer_id"] != null)
+                                            {
+                                                <a href="javascript:void(0)" data-id="@product.p_id" class="addToWishlist rating"><i class="far fa-star"></i></a>
+                                            }
+                                            else
+                                            {
+                                                <a href="@Url.Action("Login","Home",new { ReturnUrl = "/Home" })" class="rating"><i class="far fa-star"></i></a>
+                                            }
+                                            <a href="@Url.Action("SingleProduct","Home",new { id = product.p_id })" class="bid"><i class="flaticon-auction"></i></a>
+                                        </div>
+                                        <div class="auction-content">
+                                            <h6 class="title">
+                                                <a href="@Url.Action("SingleProduct","Home",new { id = product.p_id })">@product.p_name</a>
+                                            </h6>
+                                            <div class="bid-area">
+                                                <div class="bid-amount">
+                                                    <div class="icon">
+                                                        <i class="flaticon-auction"></i>
+                                                    </div>
+                                                    <div class="amount-content">
+                                                        <div class="current">Current Bid</div>
+                                                        @if (product.Bids.Count > 0)
+                                                        {
+                                                            <div class="amount">Rs. @product.Bids.Max(x => x.bid_amount)</div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="amount">Rs. 0</div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div class="bid-amount">
+                                                    <div class="icon">
+                                                        <i class="flaticon-money"></i>
+                                                    </div>
+                                                    <div class="amount-content">
+                                                        <div class="current">Buy Now</div>
+                                                        <div class="amount">Rs @product.p_price</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="countdown-area">
+                                                <div class="countdown">
+                                                    <script>
+                                                    counter("bid_counter@(product.p_id)", "@product.p_end_date");
+                                                    </script>
+                                                    <div id="bid_counter@(product.p_id)"></div>
+                                                </div>
+                                                <span class="total-bids">@product.Bids.Count Bids</span>
+                                            </div>
+                                            <div class="text-center">
+                                                <a href="@Url.Action("SingleProduct","Home",new { id = product.p_id })" class="custom-button">Submit a bid</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                count++;
+                            }
+                        }
+                    </div>
+                </div>
+            </section>
+        }
+    }
+
+    if (Model != null && Model.categories.Count > 0)
+    {
+        int count = 0;
+        if (watches != null && watches.Products.Where(x => x.p_featured_product != 1 && x.p_status == 1).Count() > 0)
+        {
+            <section class="car-auction-section padding-bottom padding-top pos-rel oh">
+
+                <div class="container">
+                    <div class="section-header-3">
+                        <div class="left">
+                            <div class="thumb">
+                                <img src="@watches.cat_image" alt="header-icons">
+                            </div>
+                            <div class="title-area">
+                                <h2 style="margin-top: 15px;" class="title">@watches.cat_name</h2>
+                            </div>
+                        </div>
+                        <a href="@Url.Action("CategoryProduct","Home", new { id = watches.cat_id })" class="normal-button">View All</a>
+                    </div>
+                    <div class="row justify-content-center mb-30-none">
+                        @foreach (var product in Model.products.Where(x => x.p_featured_product != 1))
+                        {
+                            if (product.p_fk_cat == watches.cat_id && count < 3)
+                            {
+                                <div class="col-sm-10 col-md-6 col-lg-4">
+                                    <div class="auction-item-2">
+                                        <div class="auction-thumb">
+                                            @if (Model != null && Model.images.Count > 0)
+                                            {
+                                                foreach (var img in Model.images)
+                                                {
+                                                    if (img.img_fk_product_id == product.p_id)
+                                                    {
+                                                        <a href="@Url.Action("SingleProduct","Home",new { id = product.p_id })"><img src="@Url.Content(img.img_text)" style="width: 100%;height: 210px;object-fit: cover;" alt="img"></a>
+                                                    }
+                                                }
+                                            }
+                                            @if (Session["customer_id"] != null)
+                                            {
+                                                <a href="javascript:void(0)" data-id="@product.p_id" class="addToWishlist rating"><i class="far fa-star"></i></a>
+                                            }
+                                            else
+                                            {
+                                                <a href="@Url.Action("Login","Home",new { ReturnUrl = "/Home" })" class="rating"><i class="far fa-star"></i></a>
+                                            }
+                                            <a href="@Url.Action("SingleProduct","Home",new { id = product.p_id })" class="bid"><i class="flaticon-auction"></i></a>
+                                        </div>
+                                        <div class="auction-content">
+                                            <h6 class="title">
+                                                <a href="@Url.Action("SingleProduct","Home",new { id = product.p_id })">@product.p_name</a>
+                                            </h6>
+                                            <div class="bid-area">
+                                                <div class="bid-amount">
+                                                    <div class="icon">
+                                                        <i class="flaticon-auction"></i>
+                                                    </div>
+                                                    <div class="amount-content">
+                                                        <div class="current">Current Bid</div>
+                                                        @if (product.Bids.Count > 0)
+                                                        {
+                                                            <div class="amount">Rs. @product.Bids.Max(x => x.bid_amount)</div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="amount">Rs. 0</div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div class="bid-amount">
+                                                    <div class="icon">
+                                                        <i class="flaticon-money"></i>
+                                                    </div>
+                                                    <div class="amount-content">
+                                                        <div class="current">Buy Now</div>
+                                                        <div class="amount">Rs @product.p_price</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="countdown-area">
+                                                <div class="countdown">
+                                                    <script>
+                                                    counter("bid_counter@(product.p_id)", "@product.p_end_date");
+                                                    </script>
+                                                    <div id="bid_counter@(product.p_id)"></div>
+                                                </div>
+                                                <span class="total-bids">@product.Bids.Count Bids</span>
+                                            </div>
+                                            <div class="text-center">
+                                                <a href="@Url.Action("SingleProduct","Home",new { id = product.p_id })" class="custom-button">Submit a bid</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                count++;
+                            }
+                        }
+                    </div>
+                </div>
+            </section>
+        }
+    }
+    <!--============= Popular Auction Section Starts Here =============-->
+    if (Model != null && Model.products.Where(x => x.p_featured_product == 1).Count() > 0)
+    {
+        <section class="popular-auction padding-top pos-rel">
+            <div class="popular-bg popular-bg-1 bg_img"></div>
+            <div class="container">
+                <div class="section-header cl-white">
+                    <h2 class="title">Featured Auctions</h2>
+                    <p>Bid and win great deals,Our auction process is simple, efficient, and transparent.</p>
+                </div>
+                <div class="popular-auction-wrapper">
+                    <div class="row justify-content-center mb-30-none">
+                        @foreach (var feature_product in Model.products.Where(x => x.p_featured_product == 1).Take(6))
+                        {
+                            <div class="col-lg-6">
+                                <div class="auction-item-3">
+                                    <div class="auction-thumb">
+                                        @if (Model != null && Model.images.Count > 0)
+                                        {
+                                            foreach (var img in Model.images)
+                                            {
+                                                if (img.img_fk_product_id == feature_product.p_id)
+                                                {
+                                                    <a href="@Url.Action("SingleProduct", "Home", new { id = feature_product.p_id })"><img src="@Url.Content(img.img_text)" style="width: 100%;height: 210px;object-fit: cover;" alt="img"></a>
+                                                }
+                                            }
+                                        }
+                                        <a href="#0" class="bid"><i class="flaticon-auction"></i></a>
+                                    </div>
+                                    <div class="auction-content">
+                                        <h6 class="title">
+                                            <a href="@Url.Action("SingleProduct", "Home", new { id = feature_product.p_id })">@feature_product.p_name</a>
+                                        </h6>
+                                        <div class="bid-amount">
+                                            <div class="icon">
+                                                <i class="flaticon-auction"></i>
+                                            </div>
+                                            <div class="amount-content">
+                                                <div class="current">Current Bid</div>
+                                                @if (feature_product.Bids.Count > 0)
+                                                {
+                                                    <div class="amount">Rs. @feature_product.Bids.Max(x => x.bid_amount)</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="amount">Rs. 0</div>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="bids-area">
+                                            <span class="total-bids">Total Bids : @feature_product.Bids.Count Bids</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </section>
+    }
+
+    if (Model != null && Model.categories.Count > 0)
+    {
+        int count = 0;
+        if (sports != null && sports.Products.Where(x => x.p_featured_product != 1 && x.p_status == 1).Count() > 0)
+        {
+            <section class="car-auction-section padding-bottom padding-top pos-rel oh">
+
+                <div class="container">
+                    <div class="section-header-3">
+                        <div class="left">
+                            <div class="thumb">
+                                <img src="@sports.cat_image" alt="header-icons">
+                            </div>
+                            <div class="title-area">
+                                <h2 style="margin-top:10px;" class="title">@sports.cat_name</h2>
+                            </div>
+                        </div>
+                        <a href="@Url.Action("CategoryProduct","Home", new { id = sports.cat_id })" class="normal-button">View All</a>
+                    </div>
+                    <div class="row justify-content-center mb-30-none">
+                        @foreach (var product in Model.products.Where(x => x.p_featured_product != 1))
+                        {
+                            if (product.p_fk_cat == sports.cat_id && count < 3)
+                            {
+                                <div class="col-sm-10 col-md-6 col-lg-4">
+                                    <div class="auction-item-2">
+                                        <div class="auction-thumb">
+                                            @if (Model != null && Model.images.Count > 0)
+                                            {
+                                                foreach (var img in Model.images)
+                                                {
+                                                    if (img.img_fk_product_id == product.p_id)
+                                                    {
+                                                        <a href="@Url.Action("SingleProduct","Home",new { id = product.p_id })"><img src="@Url.Content(img.img_text)" style="width: 100%;height: 210px;object-fit: cover;" alt="img"></a>
+                                                    }
+                                                }
+                                            }
+                                            @if (Session["customer_id"] != null)
+                                            {
+                                                <a href="javascript:void(0)" data-id="@product.p_id" class="addToWishlist rating"><i class="far fa-star"></i></a>
+                                            }
+                                            else
+                                            {
+                                                <a href="@Url.Action("Login","Home",new { ReturnUrl = "/Home" })" class="rating"><i class="far fa-star"></i></a>
+                                            }
+                                            <a href="@Url.Action("SingleProduct","Home",new { id = product.p_id })" class="bid"><i class="flaticon-auction"></i></a>
+                                        </div>
+                                        <div class="auction-content">
+                                            <h6 class="title">
+                                                <a href="@Url.Action("SingleProduct","Home",new { id = product.p_id })">@product.p_name</a>
+                                            </h6>
+                                            <div class="bid-area">
+                                                <div class="bid-amount">
+                                                    <div class="icon">
+                                                        <i class="flaticon-auction"></i>
+                                                    </div>
+                                                    <div class="amount-content">
+                                                        <div class="current">Current Bid</div>
+                                                        @if (product.Bids.Count > 0)
+                                                        {
+                                                            <div class="amount">Rs. @product.Bids.Max(x => x.bid_amount)</div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="amount">Rs. 0</div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div class="bid-amount">
+                                                    <div class="icon">
+                                                        <i class="flaticon-money"></i>
+                                                    </div>
+                                                    <div class="amount-content">
+                                                        <div class="current">Buy Now</div>
+                                                        <div class="amount">Rs @product.p_price</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="countdown-area">
+                                                <div class="countdown">
+                                                    <script>
+                                                    counter("bid_counter@(product.p_id)", "@product.p_end_date");
+                                                    </script>
+                                                    <div id="bid_counter@(product.p_id)"></div>
+                                                </div>
+                                                <span class="total-bids">@product.Bids.Count Bids</span>
+                                            </div>
+                                            <div class="text-center">
+                                                <a href="@Url.Action("SingleProduct","Home",new { id = product.p_id })" class="custom-button">Submit a bid</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                count++;
+                            }
+                        }
+                    </div>
+                </div>
+            </section>
+        }
+    }
+
+    if (Model != null && Model.categories.Count > 0)
+    {
+        int count = 0;
+        if (realState != null && realState.Products.Where(x => x.p_featured_product != 1 && x.p_status == 1).Count() > 0)
+        {
+            <section class="real-estate-auction padding-top padding-bottom pos-rel oh">
+                <div class="car-bg"><img src="~/Content/images/realstate-real-bg.png" alt="realstate"></div>
+                <div class="container">
+                    <div class="section-header-3">
+                        <div class="left">
+                            <div class="thumb">
+                                <img src="@Url.Content(realState.cat_image)" alt="header-icons">
+                            </div>
+                            <div class="title-area">
+                                <h2 style="margin-top:25px;" class="title">@realState.cat_name</h2>
+                            </div>
+                        </div>
+                        <a href="@Url.Action("CategoryProduct","Home", new { id = sports.cat_id })" class="normal-button">View All</a>
+                    </div>
+                    <div class="auction-slider-4 owl-theme owl-carousel">
+                        @foreach (var product in Model.products.Where(x => x.p_featured_product != 1))
+                        {
+                            if (product.p_fk_cat == realState.cat_id && count < 3)
+                            {
+                                <div class="auction-item-4">
+                                    <div class="auction-thumb">
+                                        @if (Model != null && Model.images.Count > 0)
+                                        {
+                                            foreach (var img in Model.images)
+                                            {
+                                                if (img.img_fk_product_id == product.p_id)
+                                                {
+                                                    <a href="@Url.Action("SingleProduct","Home",new { id = product.p_id })"><img src="@Url.Content(img.img_text)" alt="realstate"></a>
+                                                }
+                                            }
+                                        }
+                                        <a href="product-details.html"><img src="" alt="realstate"></a>
+                                        <a href="#0" class="bid"><i class="flaticon-auction"></i></a>
+                                    </div>
+                                    <div class="auction-content">
+                                        <h4 class="title">
+                                            <a href="@Url.Action("SingleProduct", "Home", new { id = product.p_id })">@product.p_name</a>
+                                        </h4>
+                                        <div class="bid-area">
+                                            <div class="bid-amount">
+                                                <div class="icon">
+                                                    <i class="flaticon-auction"></i>
+                                                </div>
+                                                <div class="amount-content">
+                                                    <div class="current">Current Bid</div>
+                                                    @if (product.Bids.Count > 0)
+                                                    {
+                                                        <div class="amount">Rs. @product.Bids.Max(x => x.bid_amount)</div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="amount">Rs. 0</div>
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="bid-amount">
+                                                <div class="icon">
+                                                    <i class="flaticon-money"></i>
+                                                </div>
+                                                <div class="amount-content">
+                                                    <div class="current">Buy Now</div>
+                                                    <div class="amount">Rs @product.p_price</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="countdown-area">
+                                            <script>
+                                        counter("bid_counter@(product.p_id)", "@product.p_end_date");
+                                            </script>
+                                            <div id="bid_counter@(product.p_id)"></div>
+                                            <span class="total-bids">@product.Bids.Count Bids</span>
+                                        </div>
+                                        <div class="text-center">
+                                            <a href="@Url.Action("SingleProduct", "Home", new { id = product.p_id })" class="custom-button">Submit a bid</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                    <div class="slider-nav real-style ml-auto">
+                        <a href="#0" class="real-prev"><i class="flaticon-left-arrow"></i></a>
+                        <div class="pagination"></div>
+                        <a href="#0" class="real-next active"><i class="flaticon-right-arrow"></i></a>
+                    </div>
+                </div>
+            </section>
+        }
+    }
+
+    if (Model != null && Model.categories.Count > 0)
+    {
+        int count = 0;
+        if (electronics != null && electronics.Products.Where(x => x.p_featured_product != 1 && x.p_status == 1).Count() > 0)
+        {
+            <section class="art-and-electronics-auction-section padding-top">
+                <div class="container">
+                    <div class="section-header-2">
+                        <div class="left">
+                            <div class="thumb">
+                                <img src="~/Content/images/header-icons-camera-1.png" alt="header-icons">
+                            </div>
+                            <h2 class="title">Electronics</h2>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center mb--50">
+                        @foreach (var product in Model.products.Where(x => x.p_featured_product != 1))
+                        {
+                            if (product.p_fk_cat == electronics.cat_id && count < 6)
+                            {
+                                <div class="col-xl-6 col-lg-6 mb-50">
+                                    <div class="auction-slider-1 owl-carousel owl-theme mb-30-none">
+                                        <div class="slide-item">
+                                            <div class="auction-item-1">
+                                                <div class="auction-thumb">
+                                                    @if (Model != null && Model.images.Count > 0)
+                                                    {
+                                                        foreach (var img in Model.images)
+                                                        {
+                                                            if (img.img_fk_product_id == product.p_id)
+                                                            {
+                                                                <a href="@Url.Action("SingleProduct", "Home", new { id = product.p_id })"><img src="@Url.Content(img.img_text)" style="width: 350px;height: 185px;object-fit: cover;" alt="img"></a>
+                                                            }
+                                                        }
+                                                    }
+                                                    @if (Session["customer_id"] != null)
+                                                    {
+                                                        <a href="javascript:void(0)" data-id="@product.p_id" class="addToWishlist rating"><i class="far fa-star"></i></a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a href="@Url.Action("Login","Home",new { ReturnUrl = "/Home" })" class="rating"><i class="far fa-star"></i></a>
+                                                    }
+                                                    <a href="#0" class="bid"><i class="flaticon-auction"></i></a>
+                                                </div>
+                                                <div class="auction-content">
+                                                    <h6 class="title">
+                                                        <a href="@Url.Action("SingleProduct", "Home", new { id = product.p_id })">@product.p_name</a>
+                                                    </h6>
+                                                    <div class="bid-amount">
+                                                        <div class="icon">
+                                                            <i class="flaticon-auction"></i>
+                                                        </div>
+                                                        <div class="amount-content">
+                                                            <div class="current">Current Bid</div>
+                                                            @if (product.Bids.Count > 0)
+                                                            {
+                                                                <div class="amount">Rs. @product.Bids.Max(x => x.bid_amount)</div>
+                                                            }
+                                                            else
+                                                            {
+                                                                <div class="amount">Rs. 0</div>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                    <div class="countdown-area">
+                                                        <div class="total-bids" style="width:286px;">Total Bids : @product.Bids.Count Bids</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </section>
+        }
+    }
+}
+<!--============= Art Auction Section Ends Here =============-->
+<!--============= How Section Starts Here =============-->
+<section class="how-section padding-top">
+    <div class="container">
+        <div class="how-wrapper section-bg">
+            <div class="section-header text-lg-left">
+                <h2 class="title">How it works</h2>
+                <p>Easy 3 steps to win</p>
+            </div>
+            <div class="row justify-content-center mb--40">
+                <div class="col-md-6 col-lg-4">
+                    <div class="how-item">
+                        <div class="how-thumb">
+                            <img src="~/Content/images/how-how1.png" alt="how">
+                        </div>
+                        <div class="how-content">
+                            <h4 class="title">Sign Up</h4>
+                            <p>No Credit Card Required</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="how-item">
+                        <div class="how-thumb">
+                            <img src="~/Content/images/how-how2.png" alt="how">
+                        </div>
+                        <div class="how-content">
+                            <h4 class="title">Bid</h4>
+                            <p>Bidding is free Only pay if you win</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="how-item">
+                        <div class="how-thumb">
+                            <img src="~/Content/images/how-how3.png" alt="how">
+                        </div>
+                        <div class="how-content">
+                            <h4 class="title">Win</h4>
+                            <p>Fun - Excitement - Great deals</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--============= How Section Ends Here =============-->
+<!--============= Client Section Starts Here =============-->
+<section class="client-section padding-top padding-bottom">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="title">Don&rsquo;t just take our word for it!</h2>
+            <p>Our hard work is paying off. Great reviews from amazing customers.</p>
+        </div>
+        <div class="m--15">
+            <div class="client-slider owl-theme owl-carousel">
+                <div class="client-item">
+                    <div class="client-content">
+                        <p>I can't stop bidding! It's a great way to spend some time and I want everything on Sbidu.</p>
+                    </div>
+                    <div class="client-author">
+                        <div class="thumb">
+                            <a href="#0">
+                                <img src="~/Content/images/client-client01.png" alt="client">
+                            </a>
+                        </div>
+                        <div class="content">
+                            <h6 class="title"><a href="#0">Alexis Moore</a></h6>
+                            <div class="ratings">
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="client-item">
+                    <div class="client-content">
+                        <p>I came I saw I won. Love what I have won, and will try to win something else.</p>
+                    </div>
+                    <div class="client-author">
+                        <div class="thumb">
+                            <a href="#0">
+                                <img src="~/Content/images/client-client02.png" alt="client">
+                            </a>
+                        </div>
+                        <div class="content">
+                            <h6 class="title"><a href="#0">Darin Griffin</a></h6>
+                            <div class="ratings">
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="client-item">
+                    <div class="client-content">
+                        <p>This was my first time, but it was exciting. I will try it again. Thank you so much.</p>
+                    </div>
+                    <div class="client-author">
+                        <div class="thumb">
+                            <a href="#0">
+                                <img src="~/Content/images/client-client03.png" alt="client">
+                            </a>
+                        </div>
+                        <div class="content">
+                            <h6 class="title"><a href="#0">Tom Powell</a></h6>
+                            <div class="ratings">
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--============= Client Section Ends Here =============-->
+<script>
+
+     $(".addToWishlist").click(function () {
+            $.ajax({
+                url: '@Url.Action("AddWishlistItem", "Home")',
+                data : {
+                    id : $(this).attr('data-id')
+                }
+            })
+                .done(function (response) {
+                    $.ajax({
+                        url: "@Url.Action("CountWishlistItem", "Home")",
+                    })
+                    .done(function (response) {
+                        $("#ShowWishlistItemCount").html(response);
+                    })
+                    .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert("FAIL");
+                });
+                var result = JSON.parse(response);
+                if (result.Success) {
+                    if (result.Message == "yes") {
+                        swal({
+                            title: "Product Add To Wishlist",
+                            icon: "success",
+                            button: "OK",
+                        });
+                    }
+                } else if (!result.Success) {
+                    if (result.Message == "no") {
+                        swal({
+                            title: "Product Already Add To Wishlist",
+                            icon: "warning",
+                            button: "OK",
+                        });
+                    }
+                }
+                else if (!result.Success) {
+                    if (result.Message == "error") {
+                        alert("Product Not Add To Cart")
+                    }
+                }
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("FAIL");
+            });
+    });
+
+</script>

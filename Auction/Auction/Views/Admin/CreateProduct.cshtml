@@ -1,0 +1,197 @@
+﻿@model Auction.Models.Product
+@{
+    ViewBag.Title = "Create";
+    Layout = null;
+}
+
+<h2 class="text-center">Create Product</h2>
+<div class="content-wrapper p-5">
+
+    <div class="row">
+        <div class="col-lg-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <form id="formData">
+                        <div class="form-group">
+                            <label style="font-size:15px;font-weight:bold;margin-top:10px;">Category</label>
+                            @Html.DropDownListFor(x => x.p_fk_cat, ViewBag.category as SelectList, "--Select--", new { @class = "form-control" })
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;font-weight:bold;margin-top:10px;">Name</label>
+                            <input type="text" placeholder="Enter Product Name" style="padding:12px;" name="p_name" class="form-control" value="" />
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;font-weight:bold;margin-top:10px;">Price</label>
+                            <input type="text" placeholder="Enter Price" style="padding:12px;" name="p_price" class="form-control" value="" />
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;font-weight:bold;margin-top:10px;">Description</label>
+                            <textarea placeholder="Enter Description" style="padding:12px;" name="p_description" class="form-control" value=""></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;font-weight:bold;margin-top:10px;">Is Featured</label>
+                            <div class="input-group">
+                                <div class="radio form-control">
+                                    <label><input type="radio" name="p_featured_product" value="1" /> Yes</label>
+                                </div>
+                                <div class="radio form-control">
+                                    <label><input checked type="radio" name="p_featured_product" value="0"/> No</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group  d-flex">
+                            <label style="font-size:15px;font-weight:bold;margin-top:10px;">Image</label>
+
+                            <img style="width: 220px;margin:20px;" class="img-fluid" id="p_image" src="" />
+                        </div>
+                        <div class="form-control">
+                            <input type="hidden" id="ImageURL" name="image" />
+                            <input id="imageUpload" name="Image" type="file" accept=".png, .jpg" />
+                            <span style="display:none;" id="image_upload_Error"></span>
+                        </div>
+                        <br />
+                        <button class="btn btn-primary" id="saveBtn" type="button">Save</button>
+                        <button class="btn btn-primary" id="cancelBtn" type="button">Cancel</button>
+                    </form>
+                    <div id="form_error" style="color:red;font-weight:bold;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+      $("#imageUpload").change(function () {
+    $("#image_upload_Error").hide();
+        var element = this;
+
+        var formData = new FormData();
+
+        var totalFiles = element.files.length;
+
+        for (var i = 0; i < totalFiles; i++) {
+            var file = element.files[i];
+            formData.append("Photo", file);
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("UploadImage", "Shared")',
+            dataType: 'json',
+            data: formData,
+            contentType: false,
+            processData: false
+        })
+            .done(function (response) {
+                if (response.Success == true) {
+                    $("#ImageURL").val(response.ImageURL);
+                    $("#p_image").attr("src", response.ImageURL);
+                } else if (response.Success == false){
+                    $("#image_upload_Error").show();
+                    $("#image_upload_Error").html(response.Error);
+                }
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("FAIL");
+            });
+    });
+
+    $('#formData').validate({
+        rules: {
+            p_fk_cat: {
+                required: true,
+                normalizer: function (value) {
+                    return $.trim(value);
+                }
+            },
+            p_name: {
+                required: true,
+                maxlength: 50,
+                normalizer: function (value) {
+                    return $.trim(value);
+                }
+            },
+            p_price: {
+                required: true,
+                normalizer: function (value) {
+                    return $.trim(value);
+                }
+            },
+            p_description: {
+                required: true,
+                minlength: 3,
+                normalizer: function (value) {
+                    return $.trim(value);
+                }
+            },
+            Image: {
+                required: true,
+                normalizer: function (value) {
+                    return $.trim(value);
+                }
+            },
+        },
+
+        messages: {
+            p_fk_cat: {
+                required: 'Category is required',
+            },
+            p_name: {
+                required: 'Name is required',
+                maxlength: 'Maximum Length is 50'
+            },
+            p_price: {
+                required: 'Price is required',
+            },
+            p_description: {
+                required: 'Description is required',
+                minlength: 'Minimum Length is 3'
+            },
+            Image: {
+                required: 'Image is required',
+            },
+        }
+    });
+
+    $("#saveBtn").click(function () {
+        $("#form_error").html("");
+        if ($("#formData").valid()) {
+            var fup = document.getElementById('imageUpload');
+            var fileName = fup.value;
+            var ext = fileName.substring(fileName.lastIndexOf('.') + 1);
+            if (ext == "png" || ext == "jpg" || ext == "jpeg") {
+            $.ajax({
+                url: '@Url.Action("CreateProduct", "Admin")',
+                type: 'post',
+                data: $("#formData").serialize()
+            })
+                .done(function (response) {
+                    if (response == "no") {
+                        $("#form_error").html("Product already exist");
+                    } else {
+                        $("#tableContainer").html(response);
+                        $("#actionContainer").html("");
+                    }
+                })
+                .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("FAIL");
+                });
+
+            }
+    }
+    });
+
+    $("#cancelBtn").click(function () {
+            $.ajax({
+                url: '@Url.Action("ProductTable", "Admin")',
+            })
+                .done(function (response) {
+                    $("#tableContainer").html(response);
+                    $("#actionContainer").html("");
+                })
+                .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("FAIL");
+                });
+    });
+
+</script>
