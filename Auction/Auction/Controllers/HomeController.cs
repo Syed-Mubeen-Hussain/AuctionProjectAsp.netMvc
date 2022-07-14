@@ -24,6 +24,8 @@ namespace Auction.Controllers
             model.products = db.Products.Where(x => x.p_status == 1).OrderByDescending(x => x.p_id).ToList();
             model.images = db.images.Where(x => x.img_selected == 1).ToList();
             model.currentBid = db.Bids.OrderByDescending(x => x.bid_amount).ToList();
+            model.Reviews = db.Reviews.Where(x=>x.r_status == 1).OrderByDescending(x => x.r_id).Take(3).ToList();
+            model.customers = db.Customers.OrderByDescending(x => x.c_id).ToList();
             return View(model);
         }
 
@@ -33,7 +35,10 @@ namespace Auction.Controllers
 
         public ActionResult AboutUs()
         {
-            return View();
+            AboutUsViewModel model = new AboutUsViewModel();
+            model.Reviews = db.Reviews.Where(x => x.r_status == 1).OrderByDescending(x => x.r_id).Take(3).ToList();
+            model.customers = db.Customers.OrderByDescending(x => x.c_id).ToList();
+            return View(model);
         }
 
         #endregion
@@ -1003,6 +1008,7 @@ namespace Auction.Controllers
                     review.r_stars = r.r_stars;
                     review.r_message = r.r_message;
                     review.r_status = 0;
+                    review.r_fk_c_id = Convert.ToInt32(Session["customer_id"]);
                     db.Reviews.Add(review);
                     db.SaveChanges();
                     return RedirectToAction("Index", "Home");

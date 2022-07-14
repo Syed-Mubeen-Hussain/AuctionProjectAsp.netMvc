@@ -333,7 +333,7 @@ namespace Auction.Controllers
                     p.p_dateOfCreation = DateTime.Now.ToLongDateString();
                     p.p_fk_cat = pro.p_fk_cat;
                     p.p_start_date = DateTime.Now.ToString();
-                    p.p_end_date = DateTime.Now.AddDays(2).ToString();
+                    p.p_end_date = DateTime.Now.AddDays(1).ToString();
                     p.p_increment = 0;
                     p.p_featured_product = pro.p_featured_product;
                     p.p_status = 1;

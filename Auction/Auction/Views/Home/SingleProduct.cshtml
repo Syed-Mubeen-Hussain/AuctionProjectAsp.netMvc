@@ -329,6 +329,22 @@
 <!--============= Product Details Section Ends Here =============-->
 
 <script>
+    setInterval(function () {
+            $.ajax({
+                url: '@Url.Action("AuctionBids", "Home")',
+                data: {
+                    id: "@Model.product.p_id"
+                }
+            })
+            .done(function (response) {
+                highest_amount2 = response;
+                $("#tableContainer").html(response);
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("FAIL");
+            });
+    }, 3000);
+
     function foucusAction(contentToAction) {
         $('html, body').animate({
             scrollTop: $("#" + contentToAction).offset().top - 110

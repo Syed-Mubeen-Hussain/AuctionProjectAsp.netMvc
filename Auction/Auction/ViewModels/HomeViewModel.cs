@@ -12,6 +12,14 @@ namespace Auction.ViewModels
         public List<Product> products { get; set; }
         public List<image> images { get; set; }
         public List<Bid> currentBid { get; set; }
+        public List<Review> Reviews { get; set; }
+        public List<Customer> customers { get; set; }
+    }
+
+    public class AboutUsViewModel
+    {
+        public List<Review> Reviews { get; set; }
+        public List<Customer> customers { get; set; }
     }
 
     public class ShopViewModel

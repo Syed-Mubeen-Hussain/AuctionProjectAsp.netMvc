@@ -153,7 +153,7 @@
         var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/;
         if (!allowedExtensions.exec(filePath.toLowerCase())) {
             $("#c_image_upload_Error").html('Image format not supported.');
-        } 
+        }
        });
     $('#formData').validate({
         rules: {
@@ -206,7 +206,8 @@
                 maxlength: 50,
                 normalizer: function (value) {
                     return $.trim(value);
-                }
+                },
+                email: true
             },
             c_username: {
                 required: true,
@@ -252,7 +253,8 @@
             },
             c_email: {
                 required: "Email is required",
-                maxlength: "Maximum 50 Characters"
+                maxlength: "Maximum 50 Characters",
+                email: "Email Not Valid"
             },
             c_username: {
                 required: "Username is required",

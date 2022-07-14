@@ -20,5 +20,6 @@ namespace Auction.Models
         public string r_stars { get; set; }
         public string r_message { get; set; }
         public int r_status { get; set; }
+        public int r_fk_c_id { get; set; }
     }
 }

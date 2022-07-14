@@ -111,7 +111,8 @@
                 maxlength: 50,
                 normalizer: function (value) {
                     return $.trim(value);
-                }
+                },
+                email: true
             },
             r_stars: {
                 required: true,
@@ -134,7 +135,8 @@
             },
             r_email: {
                 required: 'Email is required',
-                maxlength: 'Maximum Length is 50'
+                maxlength: 'Maximum Length is 50',
+                email: "Email Not Valid"
             },
             r_stars: {
                 required: 'Stars is required'

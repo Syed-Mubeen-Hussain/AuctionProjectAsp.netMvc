@@ -113,6 +113,7 @@ r_username nvarchar(50) not null,
 r_email nvarchar(50) not null,
 r_stars nvarchar(5) not null,
 r_message nvarchar(max) not null,
-r_status int not null
+r_status int not null,
+r_fk_c_id int not null
 )
 select * from Reviews
