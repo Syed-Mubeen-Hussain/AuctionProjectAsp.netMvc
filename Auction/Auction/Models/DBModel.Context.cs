@@ -37,5 +37,6 @@ namespace Auction.Models
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<Product_View> Product_View { get; set; }
         public virtual DbSet<Wishlist> Wishlists { get; set; }
+        public virtual DbSet<Review> Reviews { get; set; }
     }
 }

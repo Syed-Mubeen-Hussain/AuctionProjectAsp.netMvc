@@ -29,6 +29,7 @@
         <EntityTypeShape EntityType="db_AuctionModel.Wishlist" Width="1.5" PointX="7.5" PointY="3.75" />
         <AssociationConnector Association="db_AuctionModel.FK__Wishlist__w_fk_c__6FE99F9F" />
         <AssociationConnector Association="db_AuctionModel.FK__Wishlist__w_fk_p__70DDC3D8" />
+        <EntityTypeShape EntityType="db_AuctionModel.Review" Width="1.5" PointX="7.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

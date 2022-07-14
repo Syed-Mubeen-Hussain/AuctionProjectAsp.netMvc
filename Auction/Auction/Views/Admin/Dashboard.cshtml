@@ -4,9 +4,72 @@
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
 
-
+<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
     <div class="container-fluid py-4">
         <div class="row">
-            <div style="font-size: 45px;font-weight: bold;text-align: center;margin-bottom: 65px;padding-left:200px;">Dashboard</div>
+            <div style="font-size: 45px;font-weight: bold;text-align: center;margin-bottom: 45px;">Dashboard</div>
+        </div>
+        <div class="row" style="display:flex;justify-content:center;">
+            <div class="col-lg-6 col-md-6" style="margin-bottom:22px;">
+                <div class="card" style="padding:10px;">
+                    <div class="card-header p-3 pt-2" style="display: flex;justify-content: center;align-items: center;">
+                        <div class="text-end pt-1">
+                            <p class="mb-0 text-capitalize" style="font-size:30px;font-weight:500">Categories</p>
+                            <h4 class="mb-0 text-center" style="font-size:35px;">@ViewData["categories"]</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 mb-3" style="margin-bottom:22px;">
+                <div class="card" style="padding:10px;">
+                    <div class="card-header p-3 pt-2" style="display: flex;justify-content: center;align-items: center;">
+                        <div class="text-end pt-1">
+                            <p class="mb-0 text-capitalize" style="font-size:30px;font-weight:500">Products</p>
+                            <h4 class="mb-0 text-center" style="font-size:35px;">@ViewData["products"]</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 mb-3" style="margin-bottom:22px;">
+                <div class="card" style="padding:10px;">
+                    <div class="card-header p-3 pt-2" style="display: flex;justify-content: center;align-items: center;">
+                        <div class="text-end pt-1">
+                            <p class="mb-0 text-capitalize" style="font-size:30px;font-weight:500">Orders</p>
+                            <h4 class="mb-0 text-center" style="font-size:35px;">@ViewData["orders"]</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 mb-3" style="margin-bottom:22px;">
+                <div class="card" style="padding:10px;">
+                    <div class="card-header p-3 pt-2" style="display: flex;justify-content: center;align-items: center;">
+                        <div class="text-end pt-1">
+                            <p class="mb-0 text-capitalize" style="font-size:30px;font-weight:500">Customers</p>
+                            <h4 class="mb-0 text-center" style="font-size:35px;">@ViewData["customers"]</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 mb-3" style="margin-bottom:22px;">
+                <div class="card" style="padding:10px;">
+                    <div class="card-header p-3 pt-2" style="display: flex;justify-content: center;align-items: center;">
+                        <div class="text-end pt-1">
+                            <p class="mb-0 text-capitalize" style="font-size:30px;font-weight:500">Featured Products</p>
+                            <h4 class="mb-0 text-center" style="font-size:35px;">@ViewData["featured_Products"]</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 mb-3" style="margin-bottom:22px;">
+                <div class="card" style="padding:10px;">
+                    <div class="card-header p-3 pt-2" style="display: flex;justify-content: center;align-items: center;">
+                        <div class="text-end pt-1">
+                            <p class="mb-0 text-capitalize" style="font-size:30px;font-weight:500">Reviews</p>
+                            <h4 class="mb-0 text-center" style="font-size:35px;">@ViewData["Reviews"]</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+</main>

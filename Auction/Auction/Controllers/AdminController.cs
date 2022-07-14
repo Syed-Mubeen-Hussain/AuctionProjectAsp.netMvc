@@ -25,6 +25,12 @@ namespace Auction.Controllers
             }
             else
             {
+                ViewData["categories"] = db.Categories.Count();
+                ViewData["products"] = db.Products.Count();
+                ViewData["orders"] = db.orders.Count();
+                ViewData["customers"] = db.Customers.Count();
+                ViewData["featured_Products"] = db.Products.Where(x => x.p_featured_product == 1).Count();
+                ViewData["Reviews"] = db.Reviews.Count();
                 return View();
             }
         }
@@ -861,6 +867,96 @@ namespace Auction.Controllers
 
         #endregion
 
+        #region Order
+
+        public ActionResult Order()
+        {
+            if (Session["username"] == null)
+            {
+                return RedirectToAction("Login", "Admin");
+            }
+            else
+            {
+                return View();
+            }
+        }
+
+        public ActionResult OrderTable(string search, int? pageNo)
+        {
+            if (Session["username"] == null)
+            {
+                return RedirectToAction("Login", "Admin");
+            }
+            else
+            {
+                AdminOrderViewModel model = new AdminOrderViewModel();
+
+                int pageSize = 5;
+
+                pageNo = pageNo.HasValue ? pageNo.Value > 0 ? pageNo.Value : 1 : 1;
+
+                model.pageNo = pageNo.Value;
+
+                var order = db.orders.ToList();
+
+                var totalOrder = db.orders.Count();
+
+                if (!string.IsNullOrEmpty(search))
+                {
+                    model.SearchTerm = search;
+                    order = db.orders.Where(x => x.o_id.ToString().Contains(search.Trim().ToLower())).ToList();
+                    totalOrder = order.Count();
+                }
+
+                model.orders = order.OrderByDescending(x => x.o_id).Skip((pageNo.Value - 1) * pageSize).Take(pageSize).ToList();
+
+                model.page = new Pager(totalOrder, pageNo, pageSize);
+
+                return PartialView(model);
+            }
+        }
+
+        public ActionResult DetailsOrder(int id)
+        {
+            if (Session["username"] == null)
+            {
+                return RedirectToAction("Login", "Admin");
+            }
+            else
+            {
+                if (id > 0)
+                {
+                    OrderDetailsViewModel model = new OrderDetailsViewModel();
+                    model.order = db.orders.Where(x => x.o_id == id).FirstOrDefault();
+                    var order_details = db.order_details.Where(x => x.od_fk_o == model.order.o_id).Select(x=>x.od_fk_product_id).ToList();
+                    model.products = db.Products.Where(x => order_details.Contains(x.p_id)).ToList();
+                    return PartialView(model);
+                }
+                else
+                {
+                    return RedirectToAction("OrderTable");
+                }
+            }
+        }
+
+        public ActionResult OrderChangeStatus(int id)
+        {
+            var order = db.orders.Where(x => x.o_id == id).FirstOrDefault();
+            return PartialView(order);
+        }
+
+        [HttpPost]
+        public ActionResult OrderChangeStatus(int id, string status)
+        {
+            var order = db.orders.Where(x => x.o_id == id).FirstOrDefault();
+            order.o_status = status;
+            db.Entry(order).State = EntityState.Modified;
+            db.SaveChanges();
+            return RedirectToAction("OrderTable");
+        }
+
+        #endregion
+
         #region Login
 
         public ActionResult Login()
@@ -943,5 +1039,181 @@ namespace Auction.Controllers
         }
 
         #endregion
+
+        #region Reviews
+
+        public ActionResult Reviews()
+        {
+            if (Session["username"] == null)
+            {
+                return RedirectToAction("Login", "Admin");
+            }
+            else
+            {
+                return View();
+            }
+        }
+
+        public ActionResult ReviewsTable(string search, int? pageNo)
+        {
+            if (Session["username"] == null)
+            {
+                return RedirectToAction("Login", "Admin");
+            }
+            else
+            {
+                AdminReviewsViewModel model = new AdminReviewsViewModel();
+
+                int pageSize = 5;
+
+                pageNo = pageNo.HasValue ? pageNo.Value > 0 ? pageNo.Value : 1 : 1;
+
+                model.pageNo = pageNo.Value;
+
+                var reviews = db.Reviews.ToList();
+
+                var totalReviews = db.Reviews.Count();
+
+                if (!string.IsNullOrEmpty(search))
+                {
+                    model.SearchTerm = search;
+                    reviews = db.Reviews.Where(x => x.r_username.ToLower().Contains(search.Trim().ToLower())).ToList();
+                    totalReviews = reviews.Count();
+                }
+
+                model.reviews = reviews.OrderByDescending(x => x.r_id).Skip((pageNo.Value - 1) * pageSize).Take(pageSize).ToList();
+
+                model.page = new Pager(totalReviews, pageNo, pageSize);
+
+                return PartialView(model);
+            }
+        }
+
+        public ActionResult EditReviews(int id, int? pageNo, string search)
+        {
+            if (Session["username"] == null)
+            {
+                return RedirectToAction("Login", "Admin");
+            }
+            else
+            {
+                if (id > 0)
+                {
+                    var data = db.Reviews.Find(id);
+                    if (pageNo.HasValue || !string.IsNullOrEmpty(search))
+                    {
+                        ViewBag.pageNo = pageNo.Value;
+                        ViewBag.search = search.ToString();
+                    }
+                    return PartialView(data);
+                }
+                else
+                {
+                    return RedirectToAction("ReviewsTable");
+                }
+            }
+        }
+
+        [HttpPost]
+        public ActionResult EditReviews(Review r, int? pageNo, string search)
+        {
+            if (r != null)
+            {
+                var check_review = db.Reviews.Find(r.r_id);
+                check_review.r_username = r.r_username;
+                check_review.r_email = r.r_email;
+                check_review.r_stars = r.r_stars;
+                check_review.r_message = r.r_message;
+                check_review.r_status = r.r_status;
+
+                db.Entry(check_review).State = EntityState.Modified;
+                db.SaveChanges();
+
+                if (pageNo.HasValue || !string.IsNullOrEmpty(search))
+                {
+                    return RedirectToAction("ReviewsTable", new { pageNo = pageNo.Value, search = search });
+                }
+                else
+                {
+                    return RedirectToAction("ReviewsTable");
+                }
+            }
+            else
+            {
+                return RedirectToAction("ReviewsTable");
+            }
+        }
+
+        public ActionResult DeleteReviews(int id, int? pageNo, string search)
+        {
+            if (Session["username"] == null)
+            {
+                return RedirectToAction("Login", "Admin");
+            }
+            else
+            {
+                if (id > 0)
+                {
+                    var data = db.Reviews.Find(id);
+                    data.r_status = 0;
+                    db.Entry(data).State = EntityState.Modified;
+                    db.SaveChanges();
+                    if (pageNo.HasValue || !string.IsNullOrEmpty(search))
+                    {
+                        return RedirectToAction("ReviewsTable", new { pageNo = pageNo.Value, search = search });
+                    }
+                    else
+                    {
+                        return RedirectToAction("ReviewsTable");
+                    }
+                }
+                else
+                {
+                    if (pageNo.HasValue || !string.IsNullOrEmpty(search))
+                    {
+                        return RedirectToAction("ReviewsTable", new { pageNo = pageNo.Value, search = search });
+                    }
+                    else
+                    {
+                        return RedirectToAction("ReviewsTable");
+                    }
+                }
+            }
+        }
+
+        public ActionResult DetailsReviews(int id, int? pageNo, string search)
+        {
+            if (Session["username"] == null)
+            {
+                return RedirectToAction("Login", "Admin");
+            }
+            else
+            {
+                if (id > 0)
+                {
+                    var data = db.Reviews.Find(id);
+                    if (pageNo.HasValue || !string.IsNullOrEmpty(search))
+                    {
+                        ViewBag.pageNo = pageNo.Value;
+                        ViewBag.search = search;
+                    }
+                    return PartialView(data);
+                }
+                else
+                {
+                    if (pageNo.HasValue || !string.IsNullOrEmpty(search))
+                    {
+                        return RedirectToAction("ReviewsTable", new { pageNo = pageNo.Value, search = search });
+                    }
+                    else
+                    {
+                        return RedirectToAction("ReviewsTable");
+                    }
+                }
+            }
+        }
+
+        #endregion
+
     }
 }

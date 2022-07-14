@@ -1,0 +1,53 @@
+﻿
+@{
+    ViewBag.Title = "Thank You";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!--============= Hero Section Starts Here =============-->
+<div class="hero-section">
+    <div class="bg_img hero-bg bottom_center sec-main-banner"></div>
+</div>
+<!--============= Hero Section Ends Here =============-->
+<!--============= Contact Section Starts Here =============-->
+<section class="contact-section padding-bottom">
+    <div class="container">
+        <div class="contact-wrapper padding-top padding-bottom mt--100 mt-lg--440" style="padding-top: 54px;padding-left: 0px;">
+            <div class="section-header" style="margin-bottom:35px;">
+                <h2 class="title">Thank You For Shopping</h2>
+                <h5 style="color:gray;">Add Your Review</h5>
+            </div>
+            <div class="row" style="display:flex;justify-content:center;">
+                <div class="col-lg-8">
+                    <form method="post" >
+                        <div class="form-group mt-2">
+                            <input type="text" required class="form-control" placeholder="Enter Your Name" name="r_username">
+                        </div>
+
+                        <div class="form-group mt-2">
+                            <input type="text" required class="form-control" placeholder="Enter Your Email ID" name="r_email">
+                        </div>
+
+                        <div class="form-group mt-2">
+                            <select class="form-control" name="r_stars">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+                        <div class="form-group mt-2">
+                            <textarea required name="r_message" class="form-control" placeholder="Type Your Feedback"></textarea>
+                        </div>
+
+                        <div class="form-group mb-0">
+                            <button type="submit" class="custom-button">Submit</button>
+                            <a style="padding: 17px 40px;margin-left: 16px;" href="@Url.Action("Index","Home")" class="rating custom-button active border">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--============= Contact Section Ends Here =============-->

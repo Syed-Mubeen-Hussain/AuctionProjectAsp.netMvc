@@ -1,11 +1,11 @@
-﻿@model Auction.Models.Contact
+﻿@model Auction.Models.Review
 @{
-    ViewBag.Title = "DetailsCategory";
+    ViewBag.Title = "DetailsReviews";
     Layout = "~/Views/Shared/_Layout_Admin.cshtml";
 }
 
 
-<h2 class="text-center">Details Contact</h2>
+<h2 class="text-center">Details Reviews</h2>
 <div class="content-wrapper p-5">
 
     <div class="row">
@@ -18,23 +18,38 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label style="font-size:15px;font-weight:bold;margin-top:10px;">Id</label>
-                                    <input class="form-control" name="cat_id" readonly value="@Model.cont_id" />
+                                    <input class="form-control" name="cat_id" readonly value="@Model.r_id" />
                                 </div>
                                 <div class="form-group">
-                                    <label style="font-size:15px;font-weight:bold;margin-top:10px;">Name</label>
-                                    <input class="form-control" name="cat_name" readonly value="@Model.cont_name" />
+                                    <label style="font-size:15px;font-weight:bold;margin-top:10px;">Username</label>
+                                    <input class="form-control" name="cat_name" readonly value="@Model.r_username" />
                                 </div>
                                 <div class="form-group">
                                     <label style="font-size:15px;font-weight:bold;margin-top:10px;">Email</label>
-                                    <input class="form-control" name="cat_name" readonly value="@Model.cont_email" />
+                                    <input class="form-control" name="cat_name" readonly value="@Model.r_email" />
+                                </div>
+                                <div class="form-group">
+                                    <label style="font-size:15px;font-weight:bold;margin-top:10px;">Stars</label>
+                                    <input class="form-control" name="cat_name" readonly value="@Model.r_stars" />
                                 </div>
                                 <div class="form-group">
                                     <label style="font-size:15px;font-weight:bold;margin-top:10px;">Message</label>
-                                    <textarea class="form-control" readonly>@Model.cont_message</textarea>
+                                    <textarea class="form-control" readonly>@Model.r_message</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label style="font-size:15px;font-weight:bold;margin-top:10px;">Status</label>
+                                    @if (Model.r_status == 1)
+                                    {
+                                        <input class="form-control" name="cat_status" readonly value="Active" />
+                                    }
+                                    else
+                                    {
+                                        <input class="form-control" name="cat_status" readonly value="Deactive" />
+                                    }
                                 </div>
                                 <br>
                                 <div>
-                                    <button type="button" id="cancelBtn" class="cancelBtn btn btn-primary" data-id="@Model.cont_id">
+                                    <button type="button" id="cancelBtn" class="cancelBtn btn btn-primary" data-id="@Model.r_id">
                                         Cancel
                                     </button>
                                 </div>
@@ -49,7 +64,7 @@
 <script>
    $("#cancelBtn").click(function () {
             $.ajax({
-                url: '@Url.Action("ContactTable","Admin")',
+                url: '@Url.Action("ReviewsTable","Admin")',
             })
                 .done(function (response) {
                     $("#tableContainer").html(response);

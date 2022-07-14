@@ -63,12 +63,34 @@ namespace Auction.ViewModels
         public int pageNo { get; set; }
     }
 
+    public class AdminReviewsViewModel
+    {
+        public List<Review> reviews { get; set; }
+        public string SearchTerm { get; set; }
+        public Pager page { get; set; }
+        public int pageNo { get; set; }
+    }
+
     public class CustomerViewModel
     {
         public List<Customer> customers { get; set; }
         public string SearchTerm { get; set; }
         public Pager page { get; set; }
         public int pageNo { get; set; }
+    }
+
+    public class AdminOrderViewModel
+    {
+        public List<order> orders { get; set; }
+        public string SearchTerm { get; set; }
+        public Pager page { get; set; }
+        public int pageNo { get; set; }
+    }
+
+    public class OrderDetailsViewModel
+    {
+        public order order { get; set; }
+        public List<Product> products { get; set; }
     }
 
     public class ContactViewModel

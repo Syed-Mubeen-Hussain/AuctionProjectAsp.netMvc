@@ -26401,7 +26401,8 @@ body > main > div.ps__rail-y, body > main > div.ps__rail-x {
 #tableContainer > div.card.my-4 > div.card-body.px-0.pb-2.pt-0 > div > table > tbody > tr:nth-child(n) > td:nth-child(n) > button.editBtn,
 #tableContainer > div.card.my-4 > div.card-body.px-0.pb-2.pt-0 > div > table > tbody > tr:nth-child(n) > td:nth-child(n) > button.deleteBtn,
 #tableContainer > div.card.my-4 > div.card-body.px-0.pb-2.pt-0 > div > table > tbody > tr:nth-child(n) > td:nth-child(n) > button.detailsBtn,
-#tableContainer > div > div.card-body.px-0.pb-2.pt-0 > div > table > tbody > tr > td:nth-child(7) > button.imageBtn {
+#tableContainer > div > div.card-body.px-0.pb-2.pt-0 > div > table > tbody > tr > td:nth-child(7) > button.imageBtn,
+#tableContainer > div > div.card-body.px-0.pb-2.pt-0 > div > table > tbody > tr:nth-child(n) > td.align-middle > button.statusBtn {
     background: #e91e63;
     border: none;
     color: white;

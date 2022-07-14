@@ -126,18 +126,48 @@
 
     $('#formData').validate({
         rules: {
-            cat_name: {
+            p_fk_cat: {
+                required: true,
+                normalizer: function (value) {
+                    return $.trim(value);
+                }
+            },
+            p_name: {
                 required: true,
                 maxlength: 50,
                 normalizer: function (value) {
                     return $.trim(value);
                 }
             },
+            p_price: {
+                required: true,
+                normalizer: function (value) {
+                    return $.trim(value);
+                }
+            },
+            p_description: {
+                required: true,
+                minlength: 3,
+                normalizer: function (value) {
+                    return $.trim(value);
+                }
+            },
         },
+
         messages: {
-            cat_name: {
+            p_fk_cat: {
+                required: 'Category is required',
+            },
+            p_name: {
                 required: 'Name is required',
                 maxlength: 'Maximum Length is 50'
+            },
+            p_price: {
+                required: 'Price is required',
+            },
+            p_description: {
+                required: 'Description is required',
+                minlength: 'Minimum Length is 3'
             },
         }
     });

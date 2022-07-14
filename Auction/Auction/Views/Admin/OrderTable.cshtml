@@ -1,14 +1,14 @@
-﻿@model Auction.ViewModels.ContactViewModel
+﻿@model Auction.ViewModels.AdminOrderViewModel 
 
 @{
-    ViewBag.Title = "ContactTable";
+    ViewBag.Title = "OrderTable";
     Layout = null;
 }
 
 <div class="card my-4">
     <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
         <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-            <h6 class="text-white text-capitalize ps-3">Contacts</h6>
+            <h6 class="text-white text-capitalize ps-3">Orders</h6>
         </div>
     </div>
 
@@ -43,25 +43,32 @@
             <table class="table text-center align-items-center mb-0">
                 <thead>
                     <tr>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"><span style="font-size:13px;">Name</span></th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"><span style="font-size:13px;">Email</span></th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"><span style="font-size:13px;">Order Id</span></th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"><span style="font-size:13px;">Total Amount</span></th>
+                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"><span style="font-size:13px;">Status</span></th>
                         <th class="text-secondary opacity-7"></th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if (Model.contacts != null && Model.contacts.Count > 0)
+                    @if (Model.orders != null && Model.orders.Count > 0)
                     {
-                        foreach (var item in Model.contacts)
+                        foreach (var item in Model.orders)
                         {
                     <tr>
                         <td>
-                            <p class="text-xs font-weight-bold mb-0">@item.cont_name</p>
+                            <p class="text-xs font-weight-bold mb-0">@item.o_id</p>
                         </td>
                         <td>
-                            <p class="text-xs font-weight-bold mb-0">@item.cont_email</p>
+                            <p class="text-xs font-weight-bold mb-0">@item.o_total_amout</p>
+                        </td>
+                        <td>
+                            <p class="text-xs font-weight-bold mb-0">@item.o_status</p>
                         </td>
                         <td class="align-middle">
-                            <button class="detailsBtn" data-id="@item.cont_id">
+                            <button class="statusBtn" data-id="@item.o_id">
+                                Change Status
+                            </button>
+                            <button class="detailsBtn" data-id="@item.o_id">
                                 Details
                             </button>
                         </td>
@@ -71,7 +78,7 @@
                     else
                     {
                         <tr>
-                            <td colspan="3" class="text-danger text-center font-weight-bold">No Contact found</td>
+                            <td colspan="4" class="text-danger text-center font-weight-bold">No Contact found</td>
                         </tr>
                     }
                 </tbody>
@@ -103,7 +110,7 @@
 
     $(".page-buttons").click(function () {
         $.ajax({
-            url: '@Url.Action("ContactTable","Admin")',
+            url: '@Url.Action("OrderTable","Admin")',
             data : {
                     pageNo : $(this).attr("data-page"),
                     search : '@Model.SearchTerm'
@@ -117,10 +124,26 @@
             });
     });
 
-  
+
       $(".detailsBtn").click(function () {
         $.ajax({
-            url: '@Url.Action("DetailsContact","Admin")',
+            url: '@Url.Action("DetailsOrder","Admin")',
+            data: {
+                id: $(this).attr('data-id')
+            }
+        })
+            .done(function (response) {
+                $("#actionContainer").html(response);
+                $("#tableContainer").html("");
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("FAIL");
+            });
+    });
+
+    $(".statusBtn").click(function () {
+        $.ajax({
+            url: '@Url.Action("OrderChangeStatus", "Admin")',
             data: {
                 id: $(this).attr('data-id')
             }
@@ -137,7 +160,7 @@
     $("#searchBtn").click(function () {
         var searchValue = $("#searchTxt").val();
         $.ajax({
-            url: '@Url.Action("ContactTable","Admin")',
+            url: '@Url.Action("OrderTable", "Admin")',
             data: {
                 search: searchValue
             }
@@ -153,7 +176,7 @@
      $("#resetBtn").click(function () {
         var searchValue = '';
         $.ajax({
-            url: '@Url.Action("ContactTable", "Admin")',
+            url: '@Url.Action("OrderTable", "Admin")',
             data: {
                 search: searchValue
             }

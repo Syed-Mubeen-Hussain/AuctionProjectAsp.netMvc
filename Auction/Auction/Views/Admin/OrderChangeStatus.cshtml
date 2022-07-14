@@ -1,0 +1,78 @@
+﻿@model Auction.Models.order
+@{
+    ViewBag.Title = "OrderChangeStatus";
+    Layout = null;
+}
+
+<h2 class="text-center">Change Status From Order</h2>
+<div class="content-wrapper p-5">
+    <div class="row">
+        <div class="col-lg-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h6>Order Id : <span style="color:brown;">@Model.o_id</span></h6>
+                    <select class="form-control" id="status">
+                        @if (Model.o_status == "Pending")
+                        {
+                            <option value="Pending" selected>Pending</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Reject">Reject</option>
+                            <option value="Approved">Approved</option>
+                        }
+                        else if (Model.o_status == "Delivered")
+                        {
+                            <option value="Pending">Pending</option>
+                            <option value="Delivered" selected>Delivered</option>
+                            <option value="Reject">Reject</option>
+                            <option value="Approved">Approved</option>
+                        }
+                        else if (Model.o_status == "Reject")
+                        {
+                            <option value="Pending">Pending</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Reject" selected>Reject</option>
+                            <option value="Approved">Approved</option>
+                        }
+                        else if (Model.o_status == "Approved")
+                        {
+                            <option value="Pending">Pending</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Reject">Reject</option>
+                            <option value="Approved" selected>Approved</option>
+                        }
+                        else
+                        {
+                            <option value="Pending">Pending</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Reject">Reject</option>
+                            <option value="Approved">Approved</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+    $("#status").change(function () {
+        $.ajax({
+            url: '@Url.Action("OrderChangeStatus","Admin")',
+            type:"POST",
+            data: {
+                id: "@Model.o_id",
+                status : $(this).val(),
+            }
+        })
+            .done(function (response) {
+                swal("Order Status Has Been Updated!", "Done!", "success");
+                $("#tableContainer").html(response);
+                $("#actionContainer").html("");
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("FAIL");
+            });
+        });
+</script>

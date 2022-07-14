@@ -339,42 +339,42 @@
             $("#formError").html("");
         var amount = $("#bid_amount").val();
         if (amount.trim() != "") {
-         $.ajax({
-            url: '@Url.Action("highestBid", "Home")',
-            data : {
-                id : "@Model.product.p_id"
-            }
-        })
-        .done(function (response) {
-            if (amount > parseInt(response)) {
-                $("#submitBtn").attr('disabled', true);
-            $.ajax({
-                url: '@Url.Action("AddAuctionBid","Home")',
+             $.ajax({
+                url: '@Url.Action("highestBid", "Home")',
                 data : {
-                    amount: amount,
-                        id : "@Model.product.p_id"
-                    }
+                    id : "@Model.product.p_id"
+                }
             })
-                .done(function (response) {
+            .done(function (response) {
+                if (amount > parseInt(response)) {
+                    $("#submitBtn").attr('disabled', true);
+                $.ajax({
+                    url: '@Url.Action("AddAuctionBid","Home")',
+                    data : {
+                        amount: amount,
+                            id : "@Model.product.p_id"
+                        }
+                    })
+                    .done(function (response) {
                     $("#tableContainer").html(response);
                     foucusAction("tableContainer");
                     $("#bid_amount").val("");
                     $("#submitBtn").removeAttr('disabled')
-                      $.ajax({
-                            url: '@Url.Action("TotalBidsAndTotalBiddersCount", "Home")',
-                            data: {
-                               id : "@Model.product.p_id"
-                            }
+                    $.ajax({
+                        url: '@Url.Action("TotalBidsAndTotalBiddersCount", "Home")',
+                        data: {
+                            id : "@Model.product.p_id"
+                        }
+                    })
+                        .done(function (response) {
+                            $("#submitBtn").removeAttr('disabled')
+                            var result = JSON.parse(response);
+                            $("#totalBidders").html(result.TotalBidders);
+                            $("#totalBids").html(result.TotalBids);
                         })
-                          .done(function (response) {
-                              $("#submitBtn").removeAttr('disabled')
-                              var result = JSON.parse(response);
-                              $("#totalBidders").html(result.TotalBidders);
-                              $("#totalBids").html(result.TotalBids);
-                          })
-                            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
-                                alert("FAIL");
-                            });
+                        .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                            alert("FAIL");
+                        });
                 })
                 .fail(function (XMLHttpRequest, textStatus, errorThrown) {
                     alert("FAIL");

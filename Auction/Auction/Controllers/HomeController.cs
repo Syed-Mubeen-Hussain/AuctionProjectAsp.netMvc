@@ -918,8 +918,8 @@ namespace Auction.Controllers
                         db.Entry(c).State = EntityState.Deleted;
                         db.SaveChanges();
                     }
-
-                    result.Data = new { Success = true };
+                    Session["Thank_You"] = o.o_id;
+                    result.Data = new { Success = true, Message = o.o_id };
                 }
                 else
                 {
@@ -944,9 +944,9 @@ namespace Auction.Controllers
             {
                 OrderViewModel model = new OrderViewModel();
                 model.order = db.orders.Where(x => x.o_fk_cus_id == customer_id).ToList();
-                var orders = db.orders.Where(x => x.o_fk_cus_id == customer_id).Select(x=>x.o_id).ToList();
-                model.order_details = db.order_details.Where(x => orders.Contains(x.od_fk_o.Value)).OrderByDescending(x=>x.od_id).ToList();
-                var order_detail = db.order_details.Where(x => orders.Contains(x.od_fk_o.Value)).Select(x=>x.od_fk_product_id).ToList();
+                var orders = db.orders.Where(x => x.o_fk_cus_id == customer_id).Select(x => x.o_id).ToList();
+                model.order_details = db.order_details.Where(x => orders.Contains(x.od_fk_o.Value)).OrderByDescending(x => x.od_id).ToList();
+                var order_detail = db.order_details.Where(x => orders.Contains(x.od_fk_o.Value)).Select(x => x.od_fk_product_id).ToList();
                 model.products = db.Products.Where(x => order_detail.Contains(x.p_id)).OrderByDescending(x => x.p_id).ToList();
                 model.images = db.images.Where(x => x.img_selected == 1).ToList();
                 if (model.order != null && model.order_details != null && model.products != null && model.images != null)
@@ -961,6 +961,60 @@ namespace Auction.Controllers
             else
             {
                 return RedirectToAction("Index", "Home");
+            }
+        }
+
+        #endregion
+
+        #region Thank You
+
+        public ActionResult Thank_You()
+        {
+            int order_id = Convert.ToInt32(Session["Thank_You"]);
+            if (order_id > 0)
+            {
+                var check_order = db.orders.Where(x => x.o_id == order_id).FirstOrDefault();
+                if (check_order != null)
+                {
+                    Session["Thank_You"] = 0;
+                    return View();
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult Thank_You(Review r)
+        {
+            if (ModelState.IsValid)
+            {
+                if (r != null)
+                {
+                    Review review = new Review();
+                    review.r_username = r.r_username;
+                    review.r_email = r.r_email;
+                    review.r_stars = r.r_stars;
+                    review.r_message = r.r_message;
+                    review.r_status = 0;
+                    db.Reviews.Add(review);
+                    db.SaveChanges();
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    return View();
+                }
+            }
+            else
+            {
+                return View();
             }
         }
 

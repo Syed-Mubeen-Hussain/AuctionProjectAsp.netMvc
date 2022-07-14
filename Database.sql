@@ -106,5 +106,13 @@ w_id int primary key identity,
 w_fk_cus_id int foreign key references Customer(c_id),
 w_fk_product_id int foreign key references Product(p_id),
 )
-select * from [order]
-select * from [order_details]
+
+create table Reviews(
+r_id int primary key identity,
+r_username nvarchar(50) not null,
+r_email nvarchar(50) not null,
+r_stars nvarchar(5) not null,
+r_message nvarchar(max) not null,
+r_status int not null
+)
+select * from Reviews

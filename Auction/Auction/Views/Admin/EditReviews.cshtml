@@ -1,0 +1,183 @@
+﻿@model Auction.Models.Review
+@{
+    ViewBag.Title = "Edit";
+    Layout = null;
+    string trueChecked = Model.r_status == 1 ? "checked" : string.Empty;
+    string falseChecked = Model.r_status == 0 ? "checked" : string.Empty;
+}
+
+<h2 class="text-center">Edit Review</h2>
+<div class="content-wrapper p-5">
+
+    <div class="row">
+        <div class="col-lg-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <form id="formData">
+                        <input type="hidden" name="r_id" value="@Model.r_id" />
+                        <div class="form-group">
+                            <label style="font-size:15px;font-weight:bold;margin-top:10px;">Username</label>
+                            <input type="text" placeholder="Enter Username" style="padding:12px;" name="r_username" class="form-control" value="@Model.r_username" />
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;font-weight:bold;margin-top:10px;">Email</label>
+                            <input type="text" placeholder="Enter Email" style="padding:12px;" name="r_email" class="form-control" value="@Model.r_email" />
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;font-weight:bold;margin-top:10px;">Stars</label>
+                            <select style="padding:12px;" name="r_stars" class="form-control">
+                                @if (Model.r_stars == "1")
+                                {
+                                    <option value="1" selected>1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                }
+                                else if (Model.r_stars == "2")
+                                {
+                                    <option value="1">1</option>
+                                    <option value="2" selected>2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                }
+                                else if (Model.r_stars == "3")
+                                {
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3" selected>3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                }
+                                else if (Model.r_stars == "4")
+                                {
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4" selected>4</option>
+                                    <option value="5">5</option>
+                                }
+                                else if (Model.r_stars == "5")
+                                {
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5" selected>5</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;font-weight:bold;margin-top:10px;">Feedback</label>
+                            <textarea placeholder="Enter Feedback" style="padding:12px;" name="r_message" class="form-control">@Model.r_message</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:15px;font-weight:bold;margin-top:10px;">Status</label>
+                            <div class="input-group">
+                                <div class="radio form-control">
+                                    <label><input type="radio" name="r_status" value="1" @trueChecked /> Active</label>
+                                </div>
+                                <div class="radio form-control">
+                                    <label><input type="radio" name="r_status" value="0" @falseChecked /> Deactive</label>
+                                </div>
+                                <input type="hidden" name="pageNo" value="@ViewBag.pageNo" />
+                                <input type="hidden" name="search" value="@ViewBag.search" />
+                            </div>
+                        </div>
+                        <br />
+                        <button class="btn btn-primary" id="editBtn" type="button">Edit</button>
+                        <button class="btn btn-primary" id="cancelBtn" type="button">Cancel</button>
+                    </form>
+                    <div id="form_error" style="color:red;font-weight:bold;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>     
+    $('#formData').validate({
+        rules: {
+            r_username: {
+                required: true,
+                maxlength: 50,
+                normalizer: function (value) {
+                    return $.trim(value);
+                }
+            },
+            r_email: {
+                required: true,
+                maxlength: 50,
+                normalizer: function (value) {
+                    return $.trim(value);
+                }
+            },
+            r_stars: {
+                required: true,
+                normalizer: function (value) {
+                    return $.trim(value);
+                }
+            },
+            r_message: {
+                required: true,
+                minlength: 3,
+                normalizer: function (value) {
+                    return $.trim(value);
+                }
+            },
+        },
+        messages: {
+            r_username: {
+                required: 'Name is required',
+                maxlength: 'Maximum Length is 50'
+            },
+            r_email: {
+                required: 'Email is required',
+                maxlength: 'Maximum Length is 50'
+            },
+            r_stars: {
+                required: 'Stars is required'
+            },
+            r_message: {
+                required: 'Message is required',
+                minlength: 'Minimum Length is 3'
+            },
+        }
+    });
+
+    $("#editBtn").click(function () {
+        $("#form_error").html("");
+        if ($("#formData").valid()) {
+            $.ajax({
+                url: '@Url.Action("EditReviews","Admin")',
+                type: 'post',
+                data: $("#formData").serialize()
+            })
+                .done(function (response) {
+                        $("#tableContainer").html(response);
+                        $("#actionContainer").html("");
+                })
+                .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("FAIL");
+                });
+        }
+    });
+
+     $("#cancelBtn").click(function () {
+            $.ajax({
+                url: '@Url.Action("ReviewsTable", "Admin")',
+                data: {
+                    pageNo : "@ViewBag.pageNo",
+                    search : "@ViewBag.search"
+                }
+            })
+                .done(function (response) {
+                    $("#tableContainer").html(response);
+                    $("#actionContainer").html("");
+                })
+                .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("FAIL");
+                });
+    });
+</script>

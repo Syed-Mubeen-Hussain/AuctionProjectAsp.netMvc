@@ -6,7 +6,11 @@
   * flatCounter
   * goTop
   * parallax
-  * removePreloader
+  * removePre
+  * 
+  * 
+  * 
+  * 
   * flatPrice
   * flatFilterBox
   * flatShopSearch

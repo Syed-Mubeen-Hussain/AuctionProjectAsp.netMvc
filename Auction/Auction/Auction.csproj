@@ -585,6 +585,9 @@
     <Compile Include="Models\Product_View.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Review.cs">
+      <DependentUpon>DBModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Wishlist.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
@@ -640,6 +643,15 @@
     <Content Include="Views\Home\RemoveWishlistItem.cshtml" />
     <Content Include="Views\Home\Checkout.cshtml" />
     <Content Include="Views\Home\Order.cshtml" />
+    <Content Include="Views\Admin\OrderTable.cshtml" />
+    <Content Include="Views\Admin\Order.cshtml" />
+    <Content Include="Views\Admin\DetailsOrder.cshtml" />
+    <Content Include="Views\Admin\OrderChangeStatus.cshtml" />
+    <Content Include="Views\Home\Thank_You.cshtml" />
+    <Content Include="Views\Admin\Reviews.cshtml" />
+    <Content Include="Views\Admin\ReviewsTable.cshtml" />
+    <Content Include="Views\Admin\EditReviews.cshtml" />
+    <Content Include="Views\Admin\DetailsReviews.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
